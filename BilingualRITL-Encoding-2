@@ -1,0 +1,44 @@
+(clear-all)
+
+(define-model encoding
+
+(chunk-type ritl-stimulus x y)
+(chunk-type ritl-instructions first second third)
+
+(chunk-type arithmetic-fact operation arg1 arg2 result)
+(chunk-type operation task type operator arg1 arg2 position)
+(chunk-type scratchpad x y result position state task)
+(chunk-type serial position task)
+
+(sgp :trace-detail            medium 
+     :show-focus              t 
+     :esc                     t 
+     :lf                      0.9 
+     :mas                     1.6 
+     :imaginal-activation     1.0 
+
+     ;; Productions
+     :epl                     t 
+     :ul                      t
+     :ult			      t
+
+     ;; Perceptual params
+     :auto-attend             t 
+     :visual-finst-span       10.0)
+
+(define-chunks ritl-stimulus x y)
+(define-chunks ritl-instructions first second third)
+
+
+(add-dm (stimulus isa ritl-stimulus 
+    x 5 
+    y 6))
+(add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
+	(/ isa chunk))
+(add-dm (encoding isa ritl-instructions first add second half third double))
+
+(load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
+
+
+
+)

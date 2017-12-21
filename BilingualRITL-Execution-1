@@ -1,0 +1,24 @@
+(clear-all)
+
+(define-model exec
+
+(chunk-type ritl-stimulus x y result position state task)
+(chunk-type ritl-instructions first second third)
+(chunk-type serial position task)
+
+(define-chunk (ritl-stimulus x y))
+(define-chunk (ritl-instructions first second third))
+
+(add-dm (inst isa ritl-instructions first add second half third double))
+
+
+(p …
+ ?imaginal>
+ state        free
+ =visual>
+   X =X
+   Y =Y
+   operation =ADD
+    ==>
+)
+)
