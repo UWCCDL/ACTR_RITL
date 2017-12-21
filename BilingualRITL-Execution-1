@@ -11,14 +11,4 @@
 
 (add-dm (inst isa ritl-instructions first add second half third double))
 
-
-(p …
- ?imaginal>
- state        free
- =visual>
-   X =X
-   Y =Y
-   operation =ADD
-    ==>
-)
 )
