@@ -1,5 +1,7 @@
 (clear-all)
 
+(define-model execution
+
 (chunk-type ritl-stimulus x y)
 (chunk-type ritl-instructions first second third)
 
@@ -28,4 +30,5 @@ y 6))
 =goal>
     isa 
 
+)
 )
