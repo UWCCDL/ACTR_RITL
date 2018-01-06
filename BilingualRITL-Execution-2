@@ -1,0 +1,58 @@
+(clear-all)
+
+(define-model execution
+
+(chunk-type ritl-stimulus x y)
+(chunk-type ritl-instructions first second third)
+(chunk-type scratchpad x y result position state task)
+
+(add-dm (stimulus isa ritl-stimulus 
+x 5 
+y 6))
+
+(add-dm (inst isa ritl-instructions first 'add second 'half third 'double))
+
+(p calculate-x
+  ?imaginal>
+    state        free
+  =imaginal>
+    isa          scratchpad
+    x            =nil
+  =visual>
+    isa          visual-object
+    status       x
+    value       =X
+
+ =retrieval>
+    isa ritl-instructions
+    first =add
+
+==>
+
+  +goal>
+    isa calculate-unary
+
+ +imaginal>
+    isa scratchpad
+    x         =x+1
+
+)
+
+(p calculate-both
+  ?imaginal>
+    state        free
+  =imaginal>
+    isa          scratchpad
+    result            nil
+=goal>
+    isa calculate-result
+
+==>
+
+=goal>
+
+
+)
+
+
+)
