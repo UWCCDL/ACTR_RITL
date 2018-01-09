@@ -3,58 +3,39 @@
 (define-model execution
 
 (chunk-type ritl-stimulus x y)
-(chunk-type ritl-instructions first second third)
-(chunk-type scratchpad x y result position state task)
-(chunk-type calculation task type operator arg1 arg2)
+(chunk-type ritl-instructions first arg1 second arg2 third arg3)
+(chunk-type operation argument1 operator argument2 trial)
 
 (add-dm (stimulus isa ritl-stimulus 
 x 5 
 y 6))
 
-(add-dm (inst isa ritl-instructions first 'add second 'half third 'double)
-(calculation isa chunk)
-)
+(add-dm (calculation isa chunk))
+
+;;; Instructions in memory
+(add-dm (inst isa ritl-instructions first double-1 second half-1 third add-1))
+;;; Operations
+(add-dm (double-1 isa operation argument1 x operator times argument2 2 trial inst))
+(add-dm (half-1 isa operation argument1 x operator / argument2 2 trial inst))
+(add-dm (add-1 isa operation argument1 x operator add argument2 y trial inst))
+
+(set-buffer-chunk 'visual 'stimulus)
 
 (p calculate-x
   "Calculate x and save on scratchpad"
-  ?imaginal>
-    state        free
-  =imaginal>
-    isa          scratchpad
-    x            =nil
+
   =visual>
-    isa          visual-object
-    status       x
-    value       =X
+    isa      visual-object
+    x       =X
 
- =retrieval>
+==>
+  +goal>
     isa ritl-instructions
-    first =add
+    first double-1
 
-==>
-
-  +goal>
-    isa calculation
-    type         unary
-
- +imaginal>
-    isa scratchpad
-    x         =x+1
-
-)
-
-(p calculate-both
-"Calculate the combine x and y and save on scratchpad"
-  ?imaginal>
-    state        free
-  =imaginal>
-    isa          scratchpad
-    result            nil
-
-==>
-
-  +goal>
-    isa calculate-result
+ +retrieval>
+    isa operation
+    x         =x
 
 )
 
