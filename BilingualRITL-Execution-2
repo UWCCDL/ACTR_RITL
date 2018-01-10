@@ -10,8 +10,6 @@
 x 5 
 y 6))
 
-(add-dm (calculation isa chunk))
-
 ;;; Instructions in memory
 (add-dm (inst isa ritl-instructions first double-1 second half-1 third add-1))
 ;;; Operations
@@ -22,8 +20,7 @@ y 6))
 (set-buffer-chunk 'visual 'stimulus)
 
 (p calculate-x
-  "Calculate x and save on scratchpad"
-
+  "Calculate unary operation and save on scratchpad"
   =visual>
     isa      visual-object
     x       =X
@@ -35,9 +32,28 @@ y 6))
 
  +retrieval>
     isa operation
-    x         =x
-
+    argument1    =x
+    operator  times
+    argument2  2
 )
 
+(p calculate-binary
+  "Calculate unary operation and save on scratchpad"
+  =visual>
+    isa      visual-object
+    x       =X
+    y       =y
+
+==>
+  +goal>
+    isa ritl-instructions
+    third add-1
+
+ +retrieval>
+    isa operation
+    argument1    =x
+    operator  add
+    argument2  =y
+)
 
 )
