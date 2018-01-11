@@ -3,7 +3,7 @@
 (define-model execution
 
 (chunk-type ritl-stimulus x y)
-(chunk-type ritl-instructions first arg1 second arg2 third arg3)
+(chunk-type ritl-instructions first second third)
 (chunk-type operation argument1 operator argument2 trial)
 
 (add-dm (stimulus isa ritl-stimulus 
@@ -24,6 +24,7 @@ y 6))
   =visual>
     isa      visual-object
     x       =X
+    y       =y
 
 ==>
   +goal>
@@ -36,6 +37,8 @@ y 6))
     operator  times
     argument2  2
 )
+
+(set-buffer-chunk 'visual 'stimulus)
 
 (p calculate-binary
   "Calculate unary operation and save on scratchpad"

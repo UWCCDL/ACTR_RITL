@@ -2,15 +2,7 @@
 
 (define-model encoding
 
-(chunk-type ritl-stimulus x y)
-(chunk-type ritl-instructions first second third)
-
-(chunk-type arithmetic-fact operation arg1 arg2 result)
-(chunk-type operation task type operator arg1 arg2 position)
-(chunk-type scratchpad x y result position state task)
-(chunk-type serial position task)
-
-(sgp :trace-detail            medium 
+(sgp :trace-detail            high 
      :show-focus              t 
      :esc                     t 
      :lf                      0.9 
@@ -26,16 +18,69 @@
      :auto-attend             t 
      :visual-finst-span       10.0)
 
+;;; RITL chunks
+(chunk-type ritl-instructions first second third)
+(chunk-type ritl-stimulus x y)
+
+;;; Arithmetic chunks
+(chunk-type arithmetic-fact operation arg1 arg2 result)
+(chunk-type operation task type operator arg1 arg2 position)
+(chunk-type scratchpad x y result position state task)
+(chunk-type serial position task)
+
+;;; Visual
+(add-dm (screen isa chunk)
+	(instructions isa chunk)
+	(inputs isa chunk)
+	(probe isa chunk)
+	(probe-responded isa chunk)
+	(fixation isa chunk)
+	(fixation1 isa chunk)
+	(fixation2 isa chunk)
+	(blank isa chunk)
+	(feedback isa chunk)
+	(operation isa chunk)
+	(variable isa chunk))
+
+
 (define-chunks ritl-stimulus x y)
 (define-chunks ritl-instructions first second third)
 
 
-(add-dm (stimulus isa ritl-stimulus 
-    x 5 
-    y 6))
 (add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
 	(/ isa chunk))
 (add-dm (encoding isa ritl-instructions first add second half third double))
+
+;;; Instruction
+
+(p encode-the-screen
+   "Encodes the screen if it's in visual-location"
+  =visual-location>
+    isa          visual-location
+    kind         screen
+  ?visual>
+    state        free
+    buffer       empty
+==>
+  +visual>
+    isa          move-attention
+    screen-pos  =visual-location
+)
+
+(p look-at-instructions 
+   "When instructions are detected, they are first encoded as a whole"
+  ?imaginal>
+    state        free
+    buffer       empty
+  =visual>
+    isa          visual-object
+    status       screen
+    value        instructions
+==>
+  +visual-location>
+    isa          visual-location
+    kind         instructions
+)
 
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
 
