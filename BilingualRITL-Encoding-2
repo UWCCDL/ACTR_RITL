@@ -24,7 +24,7 @@
 
 ;;; Arithmetic chunks
 (chunk-type arithmetic-fact operation arg1 arg2 result)
-(chunk-type operation task type operator arg1 arg2 position)
+(chunk-type operation task type argument1 operator argument2 position)
 (chunk-type scratchpad x y result position state task)
 (chunk-type serial position task)
 
@@ -46,44 +46,162 @@
 (define-chunks ritl-stimulus x y)
 (define-chunks ritl-instructions first second third)
 
-
+;;; Declarative memory
 (add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
-	(/ isa chunk))
-(add-dm (encoding isa ritl-instructions first add second half third double))
+	(/ isa chunk) (unary isa chunk) (binary isa chunk))
+(add-dm (inst isa ritl-instructions first double second half third add))
+(add-dm (stimulus isa ritl-stimulus 
+x 5 
+y 6))
+;;; Operations
+(add-dm (double-1 isa operation task double argument1 x operator * argument2 2 type unary))
+(add-dm (half-1 isa operation task half argument1 x operator / argument2 2 type unary))
+(add-dm (add-1 isa operation task add argument1 x operator + argument2 y type binary position 3))
 
 ;;; Instruction
 
-(p encode-the-screen
-   "Encodes the screen if it's in visual-location"
-  =visual-location>
-    isa          visual-location
-    kind         screen
-  ?visual>
-    state        free
-    buffer       empty
-==>
-  +visual>
-    isa          move-attention
-    screen-pos  =visual-location
-)
+;;; Normally, look at the screen & instructions, but for now:
+(set-buffer-chunk 'visual 'inst)
 
-(p look-at-instructions 
-   "When instructions are detected, they are first encoded as a whole"
+(p prepare-for-encoding 
+   "Prepares to encode operations when the instructions are on"
   ?imaginal>
     state        free
     buffer       empty
   =visual>
-    isa          visual-object
-    status       screen
-    value        instructions
+    isa      ritl-instructions
+    first    =task1
+    second   =task2
+    third    =task3
+
 ==>
-  +visual-location>
-    isa          visual-location
-    kind         instructions
+  =visual>
+  +imaginal>
+    isa          serial
+    position     1
+    task        =task1
+
 )
 
-(load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
+(p encode-x-operation
+   "Encodes x operation"
+  =imaginal>
+    isa          serial
+    position    1
+    task        =task1
+  =visual>
+    isa      ritl-instructions
+    first    =task1
+    second   =task2
+    third    =task3
+==>
+  =visual>
+  +retrieval>
+    isa      operation
+    task    =task1
+    argument2   2
+    type unary
+    position  1
+  =imaginal>
+    isa serial
+    position 2
+    task  =task2
+)
+
+(p encode-y-operation
+   "Encodes y operation"
+  =imaginal>
+    isa         serial
+    position    2
+    task        =task2
+  =visual>
+    isa      ritl-instructions
+    fist     =task1
+    second   =task2
+    third    =task3
+==>
+  =visual>
+  +retrieval>
+    isa      operation
+    task    =task2
+    argument2   2
+    type unary
+    position  2
+  =imaginal>
+    isa serial
+    position 3
+    task  =task3
+)
+
+(p encode-binary-operation
+  =visual>
+    isa      ritl-instructions
+    third    =TASK3
+  =imaginal>
+    isa serial
+    position 3
+    task  =task3
+==>
+  =visual>
+  +retrieval>
+    isa      operation
+    task      =task3
+    type    binary
+    position 3
+
+)
+
+;;; --------------------------------------------------------------
+;;; Press a key when done
+;;; --------------------------------------------------------------
+
+(p go-through-instructions
+   "Presses a key after instructions have been encoded"
+  ?imaginal>
+    state        free
+  =imaginal>
+    isa          serial
+    position     3
+  =goal>
+    isa          operation
+  - arg1         nil
+  - arg2         nil
+
+  ?manual>
+    preparation  free
+    execution    free
+==>
+  -goal>
+  -visual>
+  -visual-location>
+  =imaginal>
+  +manual>
+    isa          press-key
+    key          "2"
+)
 
 
+;;; Execution
+
+;;;(set-buffer-chunk 'visual 'stimulus)
+
+(p calculate-binary
+  "Calculate unary operation and save on scratchpad"
+  =visual>
+    isa      visual-object
+    x       =X
+    y       =y
+
+==>
+  +goal>
+    isa ritl-instructions
+    third add-1
+
+ +retrieval>
+    isa operation
+    argument1    =x
+    operator  add
+    argument2  =y
+)
 
 )
