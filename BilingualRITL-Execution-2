@@ -55,12 +55,14 @@ y 6))
     y    =y
 
   =retrieval>
+    isa    ritl-instructions
     first   =task1
 
 ==>
-
+  =retrieval>
   =visual>
   @imaginal> =task1
+
 )
 
 (p retrieve-arithmetic-fact
@@ -72,18 +74,41 @@ y 6))
 
   =imaginal>
     isa  operation
-    argument1 =arg1
+    operator =op
     argument2 =arg2
-    operator= =op
 
 ==>
-
-  =retrieval>
+  =imaginal>
+  =visual>
+  +retrieval>
     isa arithmetic-fact
     operation =op
-    arg1 =arg1
+    arg1 =x
     arg2 =arg2
 
 )
+
+(p update-scratchpad
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =retrieval>
+    isa arithmetic-fact
+    result =ans
+
+  =imaginal>
+    isa  operation
+    argument1 =arg1
+==>
+  =visual>
+  =imaginal>
+    isa  operation
+    argument1 =ans
+
+  -retrieval>
+)
+
 
 )
