@@ -21,6 +21,7 @@
 ;;; 2010-10-20  : * File created (using the functions in inst-support.lisp).
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(chunk-type arithmetic-fact operation arg1 arg2 result)
 
 (add-dm (isa arithmetic-fact operation + arg1 1 arg2 1 result 2)
         (isa arithmetic-fact operation + arg1 1 arg2 2 result 3)

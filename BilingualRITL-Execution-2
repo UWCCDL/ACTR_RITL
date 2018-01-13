@@ -1,62 +1,89 @@
-(clear-all)
+ (clear-all)
+
+#+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
+				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
 
 (define-model execution
 
+(chunk-type arithmetic-fact operation arg1 arg2 result)
 (chunk-type ritl-stimulus x y)
-(chunk-type ritl-instructions first second third)
+(chunk-type ritl-instructions kind first second third)
 (chunk-type operation argument1 operator argument2 trial)
+(chunk-type do-execution step)
+
+(load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
 
 (add-dm (stimulus isa ritl-stimulus 
 x 5 
 y 6))
 
 ;;; Instructions in memory
-(add-dm (inst isa ritl-instructions first double-1 second half-1 third add-1))
+(add-dm (double-1 isa operation argument1 x operator * argument2 2))
+(add-dm (half-1 isa operation argument1 x operator / argument2 2))
+(add-dm (add-1 isa operation argument1 x operator + argument2 y))
+(add-dm (inst isa ritl-instructions kind ritl-instructions first double-1 second half-1 third add-1))
 ;;; Operations
-(add-dm (double-1 isa operation argument1 x operator times argument2 2 trial inst))
-(add-dm (half-1 isa operation argument1 x operator / argument2 2 trial inst))
-(add-dm (add-1 isa operation argument1 x operator add argument2 y trial inst))
 
 (set-buffer-chunk 'visual 'stimulus)
 
-(p calculate-x
-  "Calculate unary operation and save on scratchpad"
+(p prepare
+  ?goal>
+    state free
+    buffer empty
+    
   =visual>
-    isa      visual-object
+    isa      ritl-stimulus
     x       =X
     y       =y
 
 ==>
+  =visual>
   +goal>
-    isa ritl-instructions
-    first double-1
+    isa do-execution
+    step setup
 
- +retrieval>
-    isa operation
-    argument1    =x
-    operator  times
-    argument2  2
+  +retrieval>
+    isa ritl-instructions
+    kind ritl-instructions
 )
 
-(set-buffer-chunk 'visual 'stimulus)
-
-(p calculate-binary
-  "Calculate unary operation and save on scratchpad"
+(p calculate-unary
+  "Just one operation for now"
   =visual>
-    isa      visual-object
-    x       =X
-    y       =y
+    isa  ritl-stimulus
+    x    =x
+    y    =y
+
+  =retrieval>
+    first   =task1
 
 ==>
-  +goal>
-    isa ritl-instructions
-    third add-1
 
- +retrieval>
-    isa operation
-    argument1    =x
-    operator  add
-    argument2  =y
+  =visual>
+  @imaginal> =task1
+)
+
+(p retrieve-arithmetic-fact
+
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =imaginal>
+    isa  operation
+    argument1 =arg1
+    argument2 =arg2
+    operator= =op
+
+==>
+
+  =retrieval>
+    isa arithmetic-fact
+    operation =op
+    arg1 =arg1
+    arg2 =arg2
+
 )
 
 )

@@ -80,7 +80,6 @@ y 6))
     isa          serial
     position     1
     task        =task1
-
 )
 
 (p encode-x-operation
