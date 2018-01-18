@@ -8,8 +8,8 @@
 (chunk-type arithmetic-fact operation arg1 arg2 result)
 (chunk-type ritl-stimulus x y)
 (chunk-type ritl-instructions kind first second third)
-(chunk-type operation argument1 operator argument2 trial)
-(chunk-type scratchpad x y result position state task)
+(chunk-type operation argument1 operator argument2 trial type position)
+(chunk-type scratchpad x y result position task)
 (chunk-type do-execution step)
 
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
@@ -19,9 +19,9 @@ x 5
 y 6))
 
 ;;; Instructions in memory
-(add-dm (double-1 isa operation argument1 x operator * argument2 2))
-(add-dm (half-1 isa operation argument1 x operator / argument2 2))
-(add-dm (add-1 isa operation argument1 x operator + argument2 y))
+(add-dm (double-1 isa operation argument1 x operator * argument2 2 type unary))
+(add-dm (half-1 isa operation argument1 x operator / argument2 2 type unary))
+(add-dm (add-1 isa operation argument1 x operator + argument2 y type binary))
 (add-dm (inst isa ritl-instructions kind ritl-instructions first double-1 second half-1 third add-1))
 ;;; Operations
 
@@ -31,7 +31,8 @@ y 6))
   ?goal>
     state free
     buffer empty
-    
+
+  
   =visual>
     isa      ritl-stimulus
     x       =X
@@ -46,10 +47,15 @@ y 6))
   +retrieval>
     isa ritl-instructions
     kind ritl-instructions
+
 )
 
 (p calculate-x
-  "Just one operation for now"
+
+ =goal>
+    isa do-execution
+    step setup
+
   ?imaginal>
     state free
     buffer empty
@@ -65,13 +71,78 @@ y 6))
 
 ==>
   =visual>
-  @imaginal> =task1
+  +imaginal>
+    isa   scratchpad
+    x  =x
+    position 1
   =retrieval>
+  @goal> =task1
 
 )
 
+(p retrieve-arithmetic-fact-unary
+  =retrieval>
+    isa    ritl-instructions
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =goal>
+    isa  operation
+    operator =op
+    argument2 =arg2
+    type unary
+
+  =imaginal>
+  isa scratchpad
+
+==>
+  =imaginal>
+  =visual>
+  +retrieval>
+    isa arithmetic-fact
+    operation =op
+    arg1 =x
+    arg2 =arg2
+  +goal>
+    isa do-execution
+    step update-pad
+)
+
+(p update-scratchpad
+  =goal>
+  isa do-execution
+  step update-pad
+  
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =retrieval>
+    isa arithmetic-fact
+    result =ans
+    position =pos
+
+  =imaginal>
+    isa  scratchpad
+==>
+  =visual>
+  +imaginal>
+    isa scratchpad
+    x  =ans
+    position  =pos
+  -goal>
+)
+
+
 (p calculate-y-unary
   "Just one operation for now"
+  =goal>
+    isa do-execution
+    step setup
+  
   =imaginal>
     isa          scratchpad
   - x            nil
@@ -89,9 +160,38 @@ y 6))
 
 ==>
   =visual>
-  @imaginal> =task2
+  @goal> =task2
   =retrieval>
+  +imaginal>
+  position 2
 )
+
+
+(p update-scratchpad-y
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =retrieval>
+    isa arithmetic-fact
+    result =ans
+
+  =goal>
+    isa  operation
+    argument1 =arg1
+    position 2
+    type unary
+==>
+  =visual>
+  +imaginal>
+    isa scratchpad
+    y =ans
+    position    2
+
+  -goal>
+)
+
 
 (p calculate-binary
   "Just one operation for now"
@@ -99,7 +199,7 @@ y 6))
     isa          scratchpad
   - x            nil
   - y            nil
-    position     3
+    position     2
 
   =visual>
     isa  ritl-stimulus
@@ -113,59 +213,12 @@ y 6))
 ==>
   =retrieval>
   =visual>
-  @imaginal> =task3
+  @goal> =task3
+  =imaginal>
+    position 3
 )
 
 
-(p retrieve-arithmetic-fact-x
-  =retrieval>
-    isa    ritl-instructions
-    first   =task1
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
-
-  =imaginal>
-    isa  operation
-    operator =op
-    argument2 =arg2
-
-==>
-  =imaginal>
-  =visual>
-  +retrieval>
-    isa arithmetic-fact
-    operation =op
-    arg1 =x
-    arg2 =arg2
-
-)
-
-(p retrieve-arithmetic-fact-y
-  =retrieval>
-    isa    ritl-instructions
-    second   =task2
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
-
-  =imaginal>
-    isa  operation
-    operator =op
-    argument2 =arg2
-
-==>
-  =imaginal>
-  =visual>
-  +retrieval>
-    isa arithmetic-fact
-    operation =op
-    arg1 =y
-    arg2 =arg2
-
-)
 
 (p retrieve-arithmetic-fact-binary
   =retrieval>
@@ -178,7 +231,8 @@ y 6))
 
   =imaginal>
     isa  operation
-    operator =op
+    operation =op
+    type binary
 
 ==>
   =imaginal>
@@ -191,54 +245,6 @@ y 6))
 
 )
 
-(p update-scratchpad-x
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
-
-  =retrieval>
-    isa arithmetic-fact
-    result =ans
-
-  =imaginal>
-    isa  operation
-    argument1 =arg1
-==>
-  =visual>
-  -imaginal>
-  +imaginal>
-    isa scratchpad
-    x =ans
-    y =y
-    position    1
-
-  -goal>
-)
-
-(p update-scratchpad-y
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
-
-  =retrieval>
-    isa arithmetic-fact
-    result =ans
-
-  =imaginal>
-    isa  operation
-    argument1 =arg1
-==>
-  =visual>
-  -imaginal>
-  +imaginal>
-    isa scratchpad
-    y =ans
-    position    2
-
-  -goal>
-)
 
 (p update-scratchpad-binary
   =visual>
@@ -252,16 +258,16 @@ y 6))
 
   =imaginal>
     isa  operation
+    type binary
 
 ==>
   =visual>
-  -imaginal>
   +imaginal>
     isa scratchpad
-    x =ans
-    position    2
+    result  =ans
+    position    3
 
-  -goal>
+  -retrieval>
 )
 
 
