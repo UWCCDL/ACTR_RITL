@@ -71,10 +71,6 @@ y 6))
 
 ==>
   =visual>
-  +imaginal>
-    isa   scratchpad
-    x  =x
-    position 1
   =retrieval>
   @goal> =task1
 
@@ -94,11 +90,11 @@ y 6))
     argument2 =arg2
     type unary
 
-  =imaginal>
-  isa scratchpad
-
 ==>
   =imaginal>
+   isa   scratchpad
+    x  =x
+    position 1
   =visual>
   +retrieval>
     isa arithmetic-fact
@@ -123,16 +119,15 @@ y 6))
   =retrieval>
     isa arithmetic-fact
     result =ans
-    position =pos
 
   =imaginal>
     isa  scratchpad
 ==>
   =visual>
-  +imaginal>
+  =imaginal>
     isa scratchpad
     x  =ans
-    position  =pos
+    position 1
   -goal>
 )
 
@@ -162,12 +157,18 @@ y 6))
   =visual>
   @goal> =task2
   =retrieval>
-  +imaginal>
+  =imaginal>
   position 2
 )
 
 
 (p update-scratchpad-y
+
+  =imaginal>
+  isa scratchpad
+  - x   nil
+  y     nil
+
   =visual>
     isa  ritl-stimulus
     x  =x
@@ -178,10 +179,10 @@ y 6))
     result =ans
 
   =goal>
-    isa  operation
-    argument1 =arg1
-    position 2
-    type unary
+    isa do-execution
+    step update-pad
+  
+
 ==>
   =visual>
   +imaginal>
