@@ -1,4 +1,4 @@
- (clear-all)
+(clear-all)
 
 #+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
 				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
@@ -31,7 +31,6 @@ y 6))
   ?goal>
     state free
     buffer empty
-
   
   =visual>
     isa      ritl-stimulus
@@ -73,16 +72,24 @@ y 6))
   =visual>
   =retrieval>
   @goal> =task1
+  +imaginal>
+    isa scratchpad
+    position 1
 
 )
 
-(p retrieve-arithmetic-fact-unary
-  =retrieval>
-    isa    ritl-instructions
+(p retrieve-arithmetic-fact-unary-x
+  =imaginal>
+   isa   scratchpad
+   x     nil
+   position 1
+
+  ?retrieval>
+    state free
+
   =visual>
     isa  ritl-stimulus
     x  =x
-    y  =y
 
   =goal>
     isa  operation
@@ -92,9 +99,6 @@ y 6))
 
 ==>
   =imaginal>
-   isa   scratchpad
-    x  =x
-    position 1
   =visual>
   +retrieval>
     isa arithmetic-fact
@@ -114,7 +118,6 @@ y 6))
   =visual>
     isa  ritl-stimulus
     x  =x
-    y  =y
 
   =retrieval>
     isa arithmetic-fact
@@ -128,12 +131,8 @@ y 6))
   =imaginal>
     isa scratchpad
     x  =ans
-<<<<<<< HEAD:BilingualRITL-Execution-almost
-    position  1
-=======
-    position 1
->>>>>>> af69d38621337731a3cf0786a4b0a23b84f28581:BilingualRITL-Execution-2
   -goal>
+  -retrieval>
 )
 
 
@@ -166,24 +165,44 @@ y 6))
   position 2
 )
 
+(p retrieve-arithmetic-fact-unary-y
+  =imaginal>
+   isa   scratchpad
+   y     nil
+   position 2
 
-(p update-scratchpad-y
+  ?retrieval>
+    state free
 
-<<<<<<< HEAD:BilingualRITL-Execution-almost
+  =visual>
+    isa  ritl-stimulus
+    y  =y
+
   =goal>
+    isa  operation
+    operator =op
+    argument2 =arg2
+    type unary
+
+==>
+  =imaginal>
+  =visual>
+  +retrieval>
+    isa arithmetic-fact
+    operation =op
+    arg1 =y
+    arg2 =arg2
+  +goal>
     isa do-execution
     step update-pad
-  
+)
 
+
+(p update-scratchpad-y
   =imaginal>
     isa  scratchpad
+    y    nil
     position 2
-=======
-  =imaginal>
-  isa scratchpad
-  - x   nil
-  y     nil
->>>>>>> af69d38621337731a3cf0786a4b0a23b84f28581:BilingualRITL-Execution-2
 
   =visual>
     isa  ritl-stimulus
@@ -193,22 +212,17 @@ y 6))
   =retrieval>
     isa arithmetic-fact
     result =ans
-
-<<<<<<< HEAD:BilingualRITL-Execution-almost
-=======
   =goal>
     isa do-execution
     step update-pad
   
-
->>>>>>> af69d38621337731a3cf0786a4b0a23b84f28581:BilingualRITL-Execution-2
 ==>
   =visual>
   =imaginal>
     isa scratchpad
     y =ans
-    position    2
 
+  -retrieval>
   -goal>
 )
 
@@ -221,18 +235,12 @@ y 6))
   - y            nil
     position     2
 
-  =visual>
-    isa  ritl-stimulus
-    x       =x
-    y       =y
-
   =retrieval>
     isa    ritl-instructions
     third   =task3
 
 ==>
   =retrieval>
-  =visual>
   @goal> =task3
   =imaginal>
     position 3
@@ -241,22 +249,23 @@ y 6))
 
 
 (p retrieve-arithmetic-fact-binary
+  =imaginal>
+    isa scratchpad
+    x  =x
+    y  =y
+    position  3
+
   =retrieval>
     isa    ritl-instructions
     third   =task3
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
 
-  =imaginal>
+  =goal>
     isa  operation
-    operation =op
+    operator =op
     type binary
 
 ==>
   =imaginal>
-  =visual>
   +retrieval>
     isa arithmetic-fact
     operation =op
@@ -274,26 +283,23 @@ y 6))
     isa do-execution
     step update-pad
 
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
-
   =retrieval>
     isa arithmetic-fact
     result =ans
 
   =imaginal>
-    isa  operation
-    type binary
+    isa scratchpad
+  - x   nil
+  - y   nil
+    result  nil
 
 ==>
-  =visual>
   =imaginal>
     isa scratchpad
     result  =ans
     position    3
 
+  -goal>
   -retrieval>
 )
 
@@ -325,10 +331,6 @@ y 6))
    "When all calculations are completed, just presses a key"
   ?imaginal>
     state        free
-  =visual>
-    isa  ritl-stimulus
-    x  =x
-    y  =y
   =imaginal>
     isa          scratchpad
   - result       nil
