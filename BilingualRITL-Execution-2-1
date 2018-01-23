@@ -1,0 +1,296 @@
+ (clear-all)
+
+#+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
+				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
+
+(define-model execution
+
+(chunk-type arithmetic-fact operation arg1 arg2 result)
+(chunk-type ritl-stimulus x y)
+(chunk-type ritl-instructions kind first second third)
+(chunk-type operation argument1 operator argument2 type  trial)
+(chunk-type scratchpad x y result position state task)
+(chunk-type do-execution step)
+
+(load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
+
+(add-dm (stimulus isa ritl-stimulus 
+x 5 
+y 6))
+
+;;; Instructions in memory
+(add-dm (double-1 isa operation argument1 x operator * argument2 2 type unary))
+(add-dm (half-1 isa operation argument1 x operator / argument2 2 type unary))
+(add-dm (add-1 isa operation argument1 x operator + argument2 y type binary))
+(add-dm (inst isa ritl-instructions kind ritl-instructions first double-1 second half-1 third add-1))
+;;; Operations
+
+(set-buffer-chunk 'visual 'stimulus)
+
+(p prepare
+  ?goal>
+    state free
+    buffer empty
+    
+  =visual>
+    isa      ritl-stimulus
+    x       =X
+    y       =y
+
+==>
+  =visual>
+  +goal>
+    isa do-execution
+    step setup
+
+  +retrieval>
+    isa ritl-instructions
+    kind ritl-instructions
+)
+
+(p calculate-x
+  "Just one operation for now"
+  ?imaginal>
+    state free
+    buffer empty
+
+  =visual>
+    isa  ritl-stimulus
+    x    =x
+    y    =y
+
+  =retrieval>
+    isa    ritl-instructions
+    first   =task1
+
+==>
+  =visual>
+  @imaginal> =task1
+  =retrieval>
+
+)
+
+(p calculate-y-unary
+  "Just one operation for now"
+  =imaginal>
+    isa          scratchpad
+  - x            nil
+    y            nil
+    position    1
+
+  =visual>
+    isa  ritl-stimulus
+    x       =x
+    y       =y
+
+  =retrieval>
+    isa    ritl-instructions
+    second   =task2
+
+==>
+  =visual>
+  @imaginal> =task2
+  =retrieval>
+)
+
+
+(p retrieve-arithmetic-fact-x
+  =retrieval>
+    isa    ritl-instructions
+    first   =task1
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =imaginal>
+    isa  operation
+    operator =op
+    argument2 =arg2
+    type unary
+
+==>
+  =imaginal>
+  =visual>
+  +retrieval>
+    isa arithmetic-fact
+    operation =op
+    arg1 =x
+    arg2 =arg2
+
+)
+
+(p retrieve-arithmetic-fact-y
+  =retrieval>
+    isa    ritl-instructions
+    second   =task2
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =imaginal>
+    isa  operation
+    operator =op
+    argument2 =arg2
+    type unary
+
+==>
+  =imaginal>
+  =visual>
+  +retrieval>
+    isa arithmetic-fact
+    operation =op
+    arg1 =y
+    arg2 =arg2
+
+)
+
+(p retrieve-arithmetic-fact-binary
+  =retrieval>
+    isa    ritl-instructions
+    third   =task3
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =imaginal>
+    isa  operation
+    operator =op
+    type binary
+
+==>
+  =imaginal>
+  =visual>
+  +retrieval>
+    isa arithmetic-fact
+    operation =op
+    arg1 =x
+    arg2 =y
+
+)
+
+(p update-scratchpad-x
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =retrieval>
+    isa arithmetic-fact
+    result =ans
+
+  =imaginal>
+    isa  operation
+    argument1 =arg1
+==>
+  =visual>
+  -imaginal>
+  +imaginal>
+    isa scratchpad
+    x =ans
+    y =y
+    position    1
+
+  -goal>
+)
+
+(p update-scratchpad-y
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =retrieval>
+    isa arithmetic-fact
+    result =ans
+
+  =imaginal>
+    isa  operation
+    argument1 =arg1
+==>
+  =visual>
+  -imaginal>
+  +imaginal>
+    isa scratchpad
+    y =ans
+    position    2
+
+  -goal>
+)
+
+(p update-scratchpad-binary
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+
+  =retrieval>
+    isa arithmetic-fact
+    result =ans
+
+  =imaginal>
+    isa  operation
+
+==>
+  =visual>
+  -imaginal>
+  +imaginal>
+    isa scratchpad
+    x =ans
+    position    2
+
+  -goal>
+)
+
+
+
+(p calculation-done
+   "Detects when all the calculations are completed"
+  ?retrieval>
+    buffer       empty
+    state        free
+  ?imaginal>
+    state        free
+  =imaginal>
+    isa          scratchpad
+    x           =RES
+    position     3
+==>
+ -goal>
+ =imaginal>
+    result      =RES
+)
+
+
+;;; --------------------------------------------------------------
+;;; When it's done, just press a button to proceed
+;;; --------------------------------------------------------------
+
+(p go-through-inputs
+   "When all calculations are completed, just presses a key"
+  ?imaginal>
+    state        free
+  =visual>
+    isa  ritl-stimulus
+    x  =x
+    y  =y
+  =imaginal>
+    isa          scratchpad
+  - result       nil
+  ?manual>
+    preparation  free
+    execution    free
+==>
+  -visual>
+  -visual-location>
+  =imaginal>
+  +manual>
+    isa          press-key
+    key          "2"
+)
+
+
+
+)

@@ -110,7 +110,7 @@ y 6))
     step update-pad
 )
 
-(p update-scratchpad
+(p update-scratchpad-x
   =goal>
   isa do-execution
   step update-pad
@@ -123,16 +123,16 @@ y 6))
   =retrieval>
     isa arithmetic-fact
     result =ans
-    position =pos
 
   =imaginal>
     isa  scratchpad
+    position 1
 ==>
   =visual>
   +imaginal>
     isa scratchpad
     x  =ans
-    position  =pos
+    position  1
   -goal>
 )
 
@@ -162,12 +162,22 @@ y 6))
   =visual>
   @goal> =task2
   =retrieval>
-  +imaginal>
+  =imaginal>
   position 2
 )
 
 
 (p update-scratchpad-y
+
+  =goal>
+    isa do-execution
+    step update-pad
+  
+
+  =imaginal>
+    isa  scratchpad
+    position 2
+
   =visual>
     isa  ritl-stimulus
     x  =x
@@ -177,14 +187,9 @@ y 6))
     isa arithmetic-fact
     result =ans
 
-  =goal>
-    isa  operation
-    argument1 =arg1
-    position 2
-    type unary
 ==>
   =visual>
-  +imaginal>
+  =imaginal>
     isa scratchpad
     y =ans
     position    2
@@ -242,11 +247,18 @@ y 6))
     operation =op
     arg1 =x
     arg2 =y
+  +goal>
+    isa do-execution
+    step update-pad
 
 )
 
 
 (p update-scratchpad-binary
+  =goal>
+    isa do-execution
+    step update-pad
+
   =visual>
     isa  ritl-stimulus
     x  =x
@@ -262,7 +274,7 @@ y 6))
 
 ==>
   =visual>
-  +imaginal>
+  =imaginal>
     isa scratchpad
     result  =ans
     position    3
@@ -281,7 +293,7 @@ y 6))
     state        free
   =imaginal>
     isa          scratchpad
-    x           =RES
+    result       =RES
     position     3
 ==>
  -goal>
