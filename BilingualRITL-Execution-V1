@@ -23,6 +23,7 @@ y 6))
 (add-dm (half-1 isa operation argument1 x operator / argument2 2 type unary))
 (add-dm (add-1 isa operation argument1 x operator + argument2 y type binary))
 (add-dm (inst isa ritl-instructions kind ritl-instructions first double-1 second half-1 third add-1))
+
 ;;; Operations
 
 (set-buffer-chunk 'visual 'stimulus)
