@@ -64,14 +64,32 @@
 ;; Data structures and parameters for the task
 ;; ---------------------------------------------------------------- ;;
 
-(defparameter *stimuli* '(correct incorrect))
+(defparameter *operators* '(double half
+			    triple third
+			    increase decrease
+			    add minus
+			    times divide))
 
-(defparameter *rules* '((correct . left) (incorrect . right)))
+(defparameter *test* '((double third add) (5 9) 13))
 
 (defparameter *responses* '((f . left) (j . right)))
 
-(defun stimulus? (stim)
-  (member stim *stimuli*))
+(defun ritl-rule? (rule)
+  (and (= (length rule) 3)
+       (every #'(lambda (x) (member x *operators*)) rule)))
+
+(defun ritl-stimulus? (stim)
+  (and (= (length stim) 3)
+       (ritl-rule? (first stim))
+       (ritl-inputs? (second stim))
+       (ritl-probe? (third stim))))
+
+(defun ritl-inputs? (ins)
+  (and (= (length ins) 2)
+       (every #'numberp ins)))
+
+(defun ritl-probe? (num)
+  (numberp num))
 
 (defun stimulus-correct-response (stim)
   "The correct answers is always that associated with the 'correct' stimulus (in this case, always left)"
