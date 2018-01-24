@@ -42,8 +42,6 @@
 	(variable isa chunk))
 
 
-(define-chunks ritl-instructions first second third)
-
 ;;; Declarative memory
 (add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
 	(/ isa chunk) (unary isa chunk) (binary isa chunk))
