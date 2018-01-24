@@ -292,14 +292,6 @@
 ;;; DATA FORMATTING
 ;;; ------------------------------------------------------------------
 
-(defun format-results (device &optional (stream t))
-  (dolist (trial (reverse (experiment-log device)))
-    (format stream "~A,~A,~A~%"
-	    (trial-stimulus trial)
-	    (trial-rt trial)
-	    (trial-accuracy trial))))
-	    
-
 (defun ritl-reload (&optional (device (make-instance 'ritl-task)))
   "Reloads the current PSS model"
   (reload)
