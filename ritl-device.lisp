@@ -70,19 +70,39 @@
 			    add minus
 			    times divide))
 
+
+(defparameter *operations* '((* x 2) (floor x 2)
+			     (* x 3) (floor x 3)
+			     (+ x 1) (- x 1)
+			     (+ x y) (- x y)
+			     (* x y) (floor x y)))
+
+(defparameter *interpretations* (pairlis *operators* *operations*))
+
+(defun splice (func inputs)
+  "replaces Xs and Ys with numbers"
+  (subst (second inputs) 'y (subst (first inputs) 'x func))) 
+
+(defun apply-op (op inputs)
+  (let ((res (splice op inputs)))
+    (apply (first res) (rest res))))
+
 (defparameter *test* '((double third add) (5 9) 13))
 
 (defparameter *responses* '((f . left) (j . right)))
 
+(defun ritl-rule (stim)
+  (first stim))
+
+(defun ritl-inputs (stim)
+  (second stim))
+
+(defun ritl-probe (stim)
+  (third stim))
+
 (defun ritl-rule? (rule)
   (and (= (length rule) 3)
        (every #'(lambda (x) (member x *operators*)) rule)))
-
-(defun ritl-stimulus? (stim)
-  (and (= (length stim) 3)
-       (ritl-rule? (first stim))
-       (ritl-inputs? (second stim))
-       (ritl-probe? (third stim))))
 
 (defun ritl-inputs? (ins)
   (and (= (length ins) 2)
@@ -91,10 +111,17 @@
 (defun ritl-probe? (num)
   (numberp num))
 
+(defun ritl-stimulus? (stim)
+  (and (= (length stim) 3)
+       (ritl-rule? (ritl-rule stim))
+       (ritl-inputs? (ritl-inputs  stim))
+       (ritl-probe? (ritl-probe stim))))
+
+
 (defun stimulus-correct-response (stim)
-  "The correct answers is always that associated with the 'correct' stimulus (in this case, always left)"
-  (when (stimulus? stim)
-    (cdr (assoc 'correct *rules*))))
+  "The correct response needs to be calculated internally"
+  (when (ritl-stimulus? stim)
+    (let* (rule ( 
 
 (defun make-trial (stim)
   (when (ritl-stimulus? stim)
