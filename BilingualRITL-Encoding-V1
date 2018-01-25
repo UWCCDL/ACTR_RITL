@@ -25,15 +25,29 @@
 
 ;;; Arithmetic chunks
 (chunk-type operation task type argument1 operator argument2 position)
-(chunk-type scratchpad x y result position state task)
+(chunk-type scratchpad x y result position state
 
-(chunk-type (ritl-screen (:include visual-object) kind nature))
+(chunk-type (ritl-screen (:include visual-object))
+	    kind nature)
 
-(chunk-type (ritl-rule (:include visual-object) task1 task2 task3))
+(chunk-type (ritl-rule (:include visual-object))
+	    task1 task2 task3)
 
-(chunk-type (ritl-execution (:include visual-object) x y))
+(chunk-type (ritl-inputs (:include visual-object))
+	    x y)
 
-(chunk-type (ritl-probe (:include visual-object) probe))
+(chunk-type (ritl-probe (:include visual-object))
+	    kind probe)
+
+(add-dm (ritl-screen isa chunk)
+	(rule isa chunk)
+	(ritl-location isa chunk)
+	(pause1 isa chunk)
+	(pause2 isa chunk)
+	(pause3 isa chunk)
+	(done isa chunk)
+	(probe isa chunk))
+
 
 ;;; Visual
 (add-dm (screen isa chunk)
