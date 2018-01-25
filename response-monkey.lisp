@@ -26,9 +26,6 @@
 	(pause2 isa chunk)
 	(pause3 isa chunk)
 	(done isa chunk)
-	(ritl-rule isa chunk)
-	(ritl-inputs isa chunk)
-	(ritl-probe isa chunk)
 	(probe isa chunk))
 
 ;;; Just encodes visual objects and reponds
