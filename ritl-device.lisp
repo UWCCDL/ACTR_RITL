@@ -90,7 +90,7 @@
 
 (defparameter *test* '((double third add) (5 9) 13))
 
-(defparameter *responses* '((f . left) (j . right)))
+(defparameter *responses* '((f . yes) (j . no)) "Left hand = Yes, Right hand = No")
 
 (defun ritl-rule (stim)
   (first stim))
@@ -125,9 +125,11 @@
     (let ((rule (ritl-rule stim))
 	  (inputs (ritl-inputs stim)))
       (let* ((x (apply-op (first rule) (first inputs)))
-	     (y (apply-op (second rule) (second inputs))))
-;;	(format t "~A, ~A~%" x y)
-	(apply-op (third rule) x y)))))
+	     (y (apply-op (second rule) (second inputs)))
+	     (res (apply-op (third rule) x y)))
+	(if (= res (ritl-probe stim))
+	    'yes
+	    'no)))))
 
 
 
@@ -260,14 +262,9 @@
   (unless (null (current-trial task))
     (let* ((trial (current-trial task))
 	   (response (cdr (assoc key *responses*))))
-      (set-trial-actual-response trial response)
+      (when (equal (task-phase task) 'probe)
+	(set-trial-actual-response trial response))
       (when (act-r-loaded?)
-	(set-trial-response-time (current-trial task)
-				 (mp-time))
-	(when *utility-learning-enabled*
-	  (if (= 1 (trial-accuracy (current-trial task)))
-	      (trigger-reward 1)
-	      (trigger-reward -1)))
 	(schedule-event-relative 0 #'next :params (list task))))))
             
 
@@ -403,20 +400,22 @@
 
 (defmethod vis-loc-to-obj ((task ritl-task) vis-loc)
   "Transforms a visual-loc into a visual object"
-  (let ((new-chunk nil)
-	(phase (task-phase task))
-	(trial (current-trial task)))
-    (cond ((pause? phase)
+  (let* ((new-chunk nil)
+	 (phase (task-phase task))
+	 (trial (current-trial task))
+	 (stim (trial-stimulus trial)))
+    (cond ((or (pause? phase) (equal 'done phase))
 	   (setf new-chunk (create-screen-chunk phase vis-loc)))
 
 	  ((equal phase 'rule)
-	   (setf new-chunk (create-rule-chunk phase vis-loc)))
+	   (setf new-chunk (create-rule-chunk (ritl-rule stim) vis-loc)))
 
 	  ((equal phase 'execution)
-	   (setf new-chunk (create-execution-chunk phase vis-loc)))
+	   (setf new-chunk (create-execution-chunk (ritl-inputs stim) vis-loc)))
 
 	  ((equal phase 'probe)
-	   (setf new-chunk (create-probe-chunk phase vis-loc))))
+	   (setf new-chunk (create-probe-chunk (ritl-probe stim)  vis-loc))))
+    
     (fill-default-vis-obj-slots new-chunk vis-loc)
     new-chunk))
 
