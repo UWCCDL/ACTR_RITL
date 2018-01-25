@@ -83,8 +83,9 @@
   "replaces Xs and Ys with numbers"
   (subst (second inputs) 'y (subst (first inputs) 'x func))) 
 
-(defun apply-op (op inputs)
-  (let ((res (splice op inputs)))
+(defun apply-op (op &rest inputs)
+  (let* ((expression (cdr (assoc op *interpretations*)))
+	 (res (splice expression inputs)))
     (apply (first res) (rest res))))
 
 (defparameter *test* '((double third add) (5 9) 13))
@@ -121,11 +122,28 @@
 (defun stimulus-correct-response (stim)
   "The correct response needs to be calculated internally"
   (when (ritl-stimulus? stim)
-    (let* (rule ( 
+    (let ((rule (ritl-rule stim))
+	  (inputs (ritl-inputs stim)))
+      (let* ((x (apply-op (first rule) (first inputs)))
+	     (y (apply-op (second rule) (second inputs))))
+;;	(format t "~A, ~A~%" x y)
+	(apply-op (third rule) x y))))))
 
+;;; RITL TRIAL FORMAT:
+;;;
+;;; 1 - RULE
+;;; 2 - Rule Onset Time
+;;; 3 - Rule Offset (response) Time
+;;; 4 - Execution Onset Time
+;;; 5 - Execution Offset (response) Time
+;;; 6 - Probe Onset Time
+;;; 7 - Probe Offset (response) Time
+;;; 8 - Correct response
+;;; 9 - Actual response
+		 		 
 (defun make-trial (stim)
   (when (ritl-stimulus? stim)
-    (list stim 0 0 (stimulus-correct-response stim) nil)))
+    (list stim 0 0 0 0 0 0 (stimulus-correct-response stim) nil)))
 
 (defun trial-stimulus (trial)
   (nth 0 trial))
@@ -134,29 +152,53 @@
   (when (ritl-stimulus? stimulus)
     (setf (nth 0 trial) stimulus)))
 
-(defun trial-onset-time (trial)
+(defun trial-rule-onset-time (trial)
   (nth 1 trial))
 
-(defun set-trial-onset-time (trial tme)
+(defun set-trial-rule-onset-time (trial tme)
   (setf (nth 1 trial) tme))
 
-(defun trial-response-time (trial)
+(defun trial-rule-response-time (trial)
   (nth 2 trial))
 
-(defun set-trial-response-time (trial tme)
+(defun set-trial-rule-response-time (trial tme)
   (setf (nth 2 trial) tme))
 
-(defun trial-correct-response (trial)
+(defun trial-execution-onset-time (trial)
   (nth 3 trial))
 
-(defun set-trial-correct-response (trial response)
-  (setf (nth 3 trial) response))
+(defun set-trial-execution-onset-time (trial tme)
+  (setf (nth 3 trial) tme))
 
-(defun trial-actual-response (trial)
+(defun trial-execution-response-time (trial)
   (nth 4 trial))
 
+(defun set-trial-execution-response-time (trial tme)
+  (setf (nth 4 trial) tme))
+
+(defun trial-probe-onset-time (trial)
+  (nth 5 trial))
+
+(defun set-trial-probe-onset-time (trial tme)
+  (setf (nth 5 trial) tme))
+
+(defun trial-probe-response-time (trial)
+  (nth 6 trial))
+
+(defun set-trial-probe-response-time (trial tme)
+  (setf (nth 6 trial) tme))
+
+(defun trial-correct-response (trial)
+  (nth 7 trial))
+
+(defun set-trial-correct-response (trial response)
+  (setf (nth 7 trial) response))
+
+(defun trial-actual-response (trial)
+  (nth 8 trial))
+
 (defun set-trial-actual-response (trial response)
-  (setf (nth 4 trial) response))
+  (setf (nth 8 trial) response))
 
 (defun generate-stimuli (&optional (n 100))
   (let ((result nil))
@@ -165,7 +207,8 @@
 	(push stim result)))))
 
 (defun generate-trials (stim-list)
-  (mapcar #'make-trial stim-list))
+  (declare (ignore stim-list))
+  (mapcar #'make-trial (list *test*)))
 
 (defun trial-rt (trial)
   (- (trial-response-time trial)
@@ -176,6 +219,15 @@
 	     (trial-actual-response trial))
       1
       0)) 
+
+(defparameter *transitions* '((rule . pause1) (pause1 . execution)
+			      (execution . pause2) (pause2 . probe)
+			      (probe . pause3) (pause3 . rule)))
+
+(defparameter *pauses* '(pause1 pause2 pause3 pause4))
+
+(defun pause? (sym)
+  (member sym *pauses*))
 
 (defclass ritl-task ()
   ((phase :accessor task-phase
@@ -198,7 +250,7 @@
     (setf (trials task) (scramble* (trials task)))
     (setf (current-trial task)
 	  (nth (index task) (trials task)))
-    (setf (task-phase task) 'stimulus)))
+    (setf (task-phase task) 'rule)))
 
 
 (defmethod respond ((task ritl-task) key)
@@ -219,6 +271,66 @@
 
 (defmethod next ((task ritl-task))
   "Moves to the next step in a RITL Task timeline"
+  (let* ((current-phase (task-phase task))
+	 (next-phase (cdr (assoc current-phase *transitions*))))
+    
+    (cond
+      ;;; Rule
+      ((equal current-phase 'rule)
+       (when (act-r-loaded?)
+	 (set-trial-rule-response-time (current-trial task)
+				       (mp-time))
+       	 (schedule-event-relative 1 'next
+				  :params (list task))))
+
+      ;;; Pause between Rule and Execution
+      ((equal current-phase 'pause1)
+       (when (act-r-loaded?)
+	 (set-trial-execution-onset-time (current-trial task)
+					 (mp-time))))
+
+      ;;; Execution
+      ((equal current-phase 'execution)
+       (when (act-r-loaded?)
+	 (set-trial-execution-response-time (current-trial task)
+					    (mp-time))
+       	 (schedule-event-relative 1 'next
+				  :params (list task))))
+
+      ;;; Pause between Execution and Probe
+      ((equal current-phase 'pause2)
+       (when (act-r-loaded?)
+	 (set-trial-probe-onset-time (current-trial task)
+				     (mp-time))))
+      
+      ;;; Probe
+      ((equal current-phase 'probe)
+       (when (act-r-loaded?)
+	 (set-trial-probe-response-time (current-trial task)
+					(mp-time))
+	 (schedule-event-relative 1 'next
+				  :params (list task)))
+       (push (current-trial task) (experiment-log task))
+       (setf (current-trial task) nil))
+
+      ;;; Pause3
+      ((equal current-phase 'pause3)
+       (incf (index task))
+       (cond ((>= (index task) (length (trials task)))
+	      (setf next-phase 'done))
+	     (t
+	      (setf (current-trial task) (nth (index task)
+					      (trials task)))
+	      (when (act-r-loaded?)
+		(set-trial-rule-onset-time (current-trial task)
+					   (mp-time))
+		(schedule-event-relative 1 'next
+					 :params (list task)))))))
+    
+    (setf (task-phase task) next-phase))
+	  
+
+      
   (cond ((equal (task-phase task) 'stimulus)
 	 (setf (task-phase task) 'pause)
 	 (push (current-trial task) (experiment-log task))
@@ -272,14 +384,15 @@
   nil)
 
 (defmethod build-vis-locs-for ((task ritl-task) vismod)
-  (if (equalp (task-phase task) 'stimulus)
-      (build-vis-locs-for (trial-stimulus (current-trial task))
-			  vismod)
+    ((pause? (task-phase task))
+      (build-vis-locs-for-pause (task-phase task))
       (build-vis-locs-for (task-phase task)
 			  vismod)))
 
 (defmethod build-vis-locs-for ((trial list) vismod)
-  (let ((results nil))
+  (let ((results nil)
+	(task-phase (
+    (cond (
     (push  `(isa ritl-location 
 		 kind ritl-stimulus
 		 value stimulus
@@ -295,7 +408,7 @@
 (defmethod build-vis-locs-for ((phase symbol) vismod)
   (let ((results nil))
     (push  `(isa ritl-location 
-		 kind ritl-location
+		 kind ritl-pause
 		 value ,phase
 		 color black
 		 screen-x 0
@@ -309,29 +422,60 @@
 (defmethod vis-loc-to-obj ((task ritl-task) vis-loc)
   "Transforms a visual-loc into a visual object"
   (let ((new-chunk nil)
-	(phase (task-phase task)))
-    (if (equal phase 'stimulus)
-	(setf new-chunk (vis-loc-to-obj (current-trial task) vis-loc))
-	(setf new-chunk (vis-loc-to-obj phase vis-loc)))
+	(phase (task-phase task))
+	(trial (current-trial task)))
+    (cond ((pause? phase)
+	   (setf new-chunk (create-screen-chunk phase vis-loc)))
+
+	  ((equal phase 'rule)
+	   (setf new-chunk (create-rule-chunk phase vis-loc)))
+
+	  ((equal phase 'execution)
+	   (setf new-chunk (create-execution-chunk phase vis-loc)))
+
+	  ((equal phase 'probe)
+	   (setf new-chunk (create-probe-chunk phase vis-loc))))
     (fill-default-vis-obj-slots new-chunk vis-loc)
     new-chunk))
 
 
-(defmethod vis-loc-to-obj ((stimulus list) vis-loc)
-  "Transforms a stimulus into a visual object"
-  (first (define-chunks-fct 
-	     `((isa ritl-object
-		    kind ritl-stimulus 
-		    value ,(trial-stimulus stimulus)
-		    )))))
 
-(defmethod vis-loc-to-obj ((phase symbol) vis-loc)
+(defmethod create-rule-chunk ((rule list) vis-loc)
   "Transforms a stimulus into a visual object"
   (first (define-chunks-fct 
-	     `((isa ritl-object
+	     `((isa ritl-rule
+		    kind ritl-rule
+		    phase rule
+		    task1 ,(first rule)
+		    task2 ,(second rule)
+		    task3 ,(third rule))))))
+
+
+(defmethod create-execution-chunk ((inputs list) vis-loc)
+  "Transforms a stimulus into a visual object"
+  (first (define-chunks-fct 
+	     `((isa ritl-inputs
+		    kind ritl-inputs
+		    phase execution
+		    x ,(first inputs)
+		    y ,(second inputs))))))
+		    
+
+(defmethod create-probe-chunk ((probe number) vis-loc)
+  "Transforms a stimulus into a visual object"
+  (first (define-chunks-fct 
+	     `((isa ritl-probe
+		    kind ritl-probe
+		    phase probe
+		    probe ,probe)))))
+
+
+(defmethod create-screen-chunk ((pause symbol) vis-loc)
+  "Transforms a stimulus into a visual object"
+  (first (define-chunks-fct 
+	     `((isa ritl-screen
 		    kind ritl-screen 
-		    value ,phase
-		    )))))
+		    value ,pause)))))
 
 ;;; ------------------------------------------------------------------
 ;;; DATA FORMATTING
