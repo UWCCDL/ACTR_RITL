@@ -127,7 +127,9 @@
       (let* ((x (apply-op (first rule) (first inputs)))
 	     (y (apply-op (second rule) (second inputs))))
 ;;	(format t "~A, ~A~%" x y)
-	(apply-op (third rule) x y))))))
+	(apply-op (third rule) x y)))))
+
+
 
 ;;; RITL TRIAL FORMAT:
 ;;;
@@ -384,31 +386,10 @@
   nil)
 
 (defmethod build-vis-locs-for ((task ritl-task) vismod)
-    ((pause? (task-phase task))
-      (build-vis-locs-for-pause (task-phase task))
-      (build-vis-locs-for (task-phase task)
-			  vismod)))
-
-(defmethod build-vis-locs-for ((trial list) vismod)
   (let ((results nil)
-	(task-phase (
-    (cond (
-    (push  `(isa ritl-location 
-		 kind ritl-stimulus
-		 value stimulus
-		 color black
-		 screen-x 0
-		 screen-y 0
-		 height 400 
-		 width 400
-		 ,@trial)
-	   results)
-    (define-chunks-fct results)))
-
-(defmethod build-vis-locs-for ((phase symbol) vismod)
-  (let ((results nil))
-    (push  `(isa ritl-location 
-		 kind ritl-pause
+	(phase (task-phase task)))
+    (push  `(isa visual-location 
+		 kind ritl-location
 		 value ,phase
 		 color black
 		 screen-x 0
@@ -417,6 +398,7 @@
 		 width 400)
 	   results)
     (define-chunks-fct results)))
+
 
 
 (defmethod vis-loc-to-obj ((task ritl-task) vis-loc)
@@ -484,6 +466,7 @@
 (defun ritl-reload (&optional (device (make-instance 'ritl-task)))
   "Reloads the current PSS model"
   (reload)
+  (init device)
   (install-device device)
   (init device)
   (proc-display))
