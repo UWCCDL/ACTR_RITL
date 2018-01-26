@@ -133,7 +133,7 @@
 
 
 
-;;; RITL TRIAL FORMAT:
+;;; RITL TRIAL STRUCT FORMAT:
 ;;;
 ;;; 1 - RULE
 ;;; 2 - Rule Onset Time
