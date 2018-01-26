@@ -205,10 +205,13 @@
   (setf (nth 8 trial) response))
 
 (defun generate-stimuli (&optional (n 100))
-  (let ((result nil))
-    (dolist (stim *stimuli* result)
-      (dotimes (i n)
-	(push stim result)))))
+;;  (let ((result nil))
+;;    (dolist (stim *stimuli* result)
+ ;;     (dotimes (i n)
+  ;;	(push stim result)))))
+  (let ((results nil))
+    (dotimes (i n)
+      (push *test* results))))
 
 (defun generate-trials (stim-list)
   (declare (ignore stim-list))
