@@ -19,7 +19,7 @@
      :visual-finst-span       10.0)
 
 ;;; RITL chunks
-(chunk-type ritl-instructions first second third)
+(chunk-type ritl-instructions task1 task2 task3)
 (chunk-type ritl-stimulus x y)
 (chunk-type do-encoding step)
 
@@ -27,13 +27,16 @@
 (chunk-type operation task type argument1 operator argument2 position)
 (chunk-type scratchpad x y result position state)
 
-;;; Perceptual chunks
+;;; Visual
 (chunk-type (ritl-screen (:include visual-object))
 	    kind nature)
+
 (chunk-type (ritl-rule (:include visual-object))
 	    task1 task2 task3)
+
 (chunk-type (ritl-inputs (:include visual-object))
 	    x y)
+
 (chunk-type (ritl-probe (:include visual-object))
 	    kind probe)
 
@@ -47,25 +50,10 @@
 	(probe isa chunk))
 
 
-;;; Visual
-(add-dm (screen isa chunk)
-	(instructions isa chunk)
-	(inputs isa chunk)
-	(probe isa chunk)
-	(probe-responded isa chunk)
-	(fixation isa chunk)
-	(fixation1 isa chunk)
-	(fixation2 isa chunk)
-	(blank isa chunk)
-	(feedback isa chunk)
-	(operation isa chunk)
-	(variable isa chunk))
-
-
 ;;; Declarative memory
 (add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
 	(/ isa chunk) (unary isa chunk) (binary isa chunk))
-(add-dm (inst isa ritl-instructions first double second half third add))
+; (add-dm (inst isa ritl-rule task1 double task2 half task3 add))
 
 ;;; Operations
 (add-dm (double-1 isa operation task double argument1 x operator * argument2 2 type unary))
@@ -73,9 +61,6 @@
 (add-dm (add-1 isa operation task add argument1 x operator + argument2 y type binary position 3))
 
 ;;; Instruction
-
-;;; Normally, look at the screen & instructions, but for now:
-(set-buffer-chunk 'visual 'inst)
 
 (p prepare-for-encoding 
    "Prepares to encode operations when the instructions are on"
@@ -112,18 +97,18 @@
     step encoding
 
   =visual>
-    isa      ritl-instructions
-    first    =task1
-    second   =task2
-    third    =task3
+    kind ritl-rule
+    task1 =first
+    task2 =second
+    task3 =third
 
 ==>
 
   +retrieval>
-    isa      ritl-instructions
-    first    =task1
-    second   =task2
-    third    =task3
+    isa   ritl-instructions
+    task1 =first
+    task2 =second
+    task3 =third
 
   -goal>
 
@@ -135,13 +120,21 @@
 
 (p go-through-instructions
    "Presses a key after instructions have been encoded"
+
+   =visual>
+   - kind ritl-screen
+   ?visual>
+     state free
+
   ?retrieval>
-    state        free
+  state        free
+
   =retrieval>
-    isa		ritl-instructions
+  isa ritl-rule
 
   ?manual>
     preparation  free
+    processor free
     execution    free
 
   ?goal>
@@ -155,4 +148,5 @@
     isa          press-key
     key          "2"
 )
+
 )

@@ -25,7 +25,7 @@
 
 ;;; Arithmetic chunks
 (chunk-type operation task type argument1 operator argument2 position)
-(chunk-type scratchpad x y result position state
+(chunk-type scratchpad x y result position state)
 
 (chunk-type (ritl-screen (:include visual-object))
 	    kind nature)
@@ -67,12 +67,12 @@
 ;;; Declarative memory
 (add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
 	(/ isa chunk) (unary isa chunk) (binary isa chunk))
-(add-dm (inst isa ritl-instructions first double second half third add))
+; (add-dm (inst isa ritl-instructions first double second half third add))
 
 ;;; Operations
-(add-dm (double-1 isa operation task double argument1 x operator * argument2 2 type unary))
-(add-dm (half-1 isa operation task half argument1 x operator / argument2 2 type unary))
-(add-dm (add-1 isa operation task add argument1 x operator + argument2 y type binary position 3))
+; (add-dm (double-1 isa operation task double argument1 x operator * argument2 2 type unary))
+; (add-dm (half-1 isa operation task half argument1 x operator / argument2 2 type unary))
+; (add-dm (add-1 isa operation task add argument1 x operator + argument2 y type binary position 3))
 
 ;;; Instruction
 
