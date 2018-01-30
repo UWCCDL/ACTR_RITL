@@ -1,6 +1,6 @@
 (clear-all)
 
-(define-model encoding
+(define-model response
 
 (sgp :trace-detail            high 
      :show-focus              t 
