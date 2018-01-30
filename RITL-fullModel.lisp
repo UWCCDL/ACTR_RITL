@@ -25,10 +25,8 @@
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
 
 ;;; RITL chunks
-(chunk-type ritl-instructions kind first second third)
-(chunk-type do-encoding step)
-(chunk-type do-execution step)
-(chunk-type do-response step)
+(chunk-type ritl-instructions kind task1 task2  task3)
+(chunk-type phase step)
 
 ;;; Arithmetic chunks
 (chunk-type operation task type argument1 operator argument2 position)
@@ -65,11 +63,11 @@
 
 
 ;;; Operations
-(add-dm (double-1 isa operation task double argument1 x operator * argument2 2 type unary))
-(add-dm (half-1 isa operation task half argument1 x operator / argument2 2 type unary))
-(add-dm (add-1 isa operation task add argument1 x operator + argument2 y type binary position 3))
+(add-dm (double isa operation task double argument1 x operator * argument2 2 type unary))
+(add-dm (half isa operation task half argument1 x operator / argument2 2 type unary))
+(add-dm (add isa operation task add argument1 x operator + argument2 y type binary position 3))
 
-;;; Instruction
+;;; ENCODING
 
 (p prepare-encoding 
    "Prepares to encode operations when the instructions are on"
@@ -92,7 +90,7 @@
      kind ritl-location
      :attended nil
   +goal>
-    isa do-encoding
+    isa phase
     step encoding
 )
 
@@ -102,7 +100,7 @@
     buffer       empty
    
   =goal>
-    isa do-encoding
+    isa phase
     step encoding
 
   =visual>
@@ -114,14 +112,14 @@
 ==>
 
   +retrieval>
-    isa   ritl-instructions
+    isa   ritl-rule
     task1 =first
     task2 =second
     task3 =third
 
     +goal>
-    isa do-encoding
-    step done
+    isa phase
+    step encoding-done
 
 )
 
@@ -147,8 +145,8 @@
     execution    free
 
   =goal>
-    isa do-encoding
-    step done
+    isa phase
+    step encoding-done
 
 ==>
 
@@ -177,7 +175,7 @@
     execution free
 
    =retrieval>
-    isa   ritl-instructions
+    isa   ritl-rule
     task1 =first
     task2 =second
     task3 =third   
@@ -189,7 +187,7 @@
    :attended nil
    
    +goal>
-   isa do-execution
+   isa phase
    step execute-x
 
    =retrieval>
@@ -200,7 +198,7 @@
 (p calculate-x
 
    =goal>
-   isa do-execution
+   isa phase
    step execute-x
 
    ?imaginal>
@@ -212,8 +210,8 @@
    x =x
 
    =retrieval>
-   isa    ritl-instructions
-   first   =task1
+   isa    ritl-rule
+   task1   =first
 
  ==>
    
@@ -221,7 +219,7 @@
  
    =retrieval>
  
-   @goal> =task1
+   @goal> =first
  
    +imaginal>
    isa scratchpad
@@ -248,7 +246,8 @@
    argument2 =arg2
    type unary
 
- ==>
+==>
+   
    =imaginal>
    
    +retrieval>
@@ -256,14 +255,15 @@
    operation =op
    arg1 =x
    arg2 =arg2
+   
    +goal>
-   isa do-execution
+   isa phase
    step update-pad
    )
 
 (p update-scratchpad-x
    =goal>
-   isa do-execution
+   isa phase
    step update-pad
 
    =retrieval>
@@ -275,9 +275,7 @@
    position 1
    
    ==>
-   
-   =visual>
-   
+      
   =imaginal>
     isa scratchpad
     x  =ans
@@ -316,7 +314,7 @@
     :attended nil
    
   +goal>
-    isa do-response
+    isa phase
     step respond
     
   =imaginal>
