@@ -65,7 +65,9 @@
 ;;; Operations
 (add-dm (double isa operation task double argument1 x operator * argument2 2 type unary))
 (add-dm (half isa operation task half argument1 x operator / argument2 2 type unary))
-(add-dm (add isa operation task add argument1 x operator + argument2 y type binary position 3))
+(add-dm (add isa operation task add argument1 x operator + argument2 y type binary))
+(add-dm (third isa operation task third argument1 x operator / argument2 3 type unary))
+
 
 ;;; ENCODING
 
@@ -104,7 +106,7 @@
     step encoding
 
   =visual>
-    kind ritl-rule
+    isa ritl-rule
     task1 =first
     task2 =second
     task3 =third
@@ -182,15 +184,12 @@
 
    ==>
    
-   +visual-location>
-   kind ritl-location
-   :attended nil
-   
    +goal>
    isa phase
-   step execute-x
-
+   step setup-calculation
+   
    =retrieval>
+
    )
 
 ;;; Calculate x
@@ -199,7 +198,7 @@
 
    =goal>
    isa phase
-   step execute-x
+   step setup-calculation
 
    ?imaginal>
    state free
@@ -214,8 +213,6 @@
    task1   =first
 
  ==>
-   
-   =visual>
  
    =retrieval>
  
@@ -224,6 +221,8 @@
    +imaginal>
    isa scratchpad
    position 1
+
+   =visual>
 
    )
 
@@ -248,7 +247,9 @@
 
 ==>
    
-   =imaginal>
+  =imaginal>
+
+  =visual>
    
    +retrieval>
    isa arithmetic-fact
@@ -279,12 +280,230 @@
   =imaginal>
     isa scratchpad
     x  =ans
+
+    -goal>
+    
+   +retrieval>
+   isa ritl-rule
+   kind ritl-rule
+  )
+
+(p calculate-y
+
+   =goal>
+   isa phase
+   step setup-calculation
    
-  -goal>
-   
-  -retrieval>
+   =imaginal>
+   isa          scratchpad
+   - x          nil
+   y            nil
+   position    1
+
+   =visual>
+   isa  ritl-inputs
+   y       =y
+
+   =retrieval>
+   isa    ritl-rule
+   task2    =second
+
+   ==>
+   =visual>
+   @goal> =second
+   =retrieval>
+   =imaginal>
+   position 2
    )
 
+(p retrieve-arithmetic-fact-unary-y
+   =imaginal>
+   isa   scratchpad
+   y     nil
+   position 2
+
+   ?retrieval>
+   state free
+
+   =visual>
+   isa  ritl-inputs
+   y  =y
+
+   =goal>
+   isa  operation
+   operator =op
+   argument2 =arg2
+   type unary
+
+   ==>
+   
+   =imaginal>
+   
+   =visual>
+   
+   +retrieval>
+   isa arithmetic-fact
+   operation =op
+   arg1 =y
+   arg2 =arg2
+   
+   +goal>
+   isa phase
+   step update-pad
+   )
+
+(p update-scratchpad-y
+   =imaginal>
+   isa  scratchpad
+   y    nil
+   position 2
+
+   =visual>
+   isa  ritl-inputs
+   y  =y
+
+   =retrieval>
+   isa arithmetic-fact
+   result =ans
+   =goal>
+   isa phase
+   step update-pad
+   
+   ==>
+   
+   =visual>
+   
+   =imaginal>
+   isa scratchpad
+   y =ans
+
+   +retrieval>
+   isa ritl-rule
+   kind ritl-rule
+   
+   -goal>
+   )
+
+
+(p calculate-binary
+
+   =imaginal>
+   isa          scratchpad
+   - x            nil
+   - y            nil
+   position     2
+
+   =retrieval>
+   isa    ritl-rule
+   task3   =third
+
+   ==>
+   
+   =retrieval>
+   
+   @goal> =third
+   
+   =imaginal>
+   position 3
+   )
+
+
+
+(p retrieve-arithmetic-fact-binary
+   =imaginal>
+   isa scratchpad
+   x  =x
+   y  =y
+   position  3
+
+   =retrieval>
+   isa    ritl-rule
+   task3   =third
+
+   =goal>
+   isa  operation
+   operator =op
+   type binary
+
+   ==>
+   
+   =imaginal>
+   
+   +retrieval>
+   isa arithmetic-fact
+   operation =op
+   arg1 =x
+   arg2 =y
+   
+   +goal>
+   isa phase
+   step update-pad
+
+   )
+
+
+(p update-scratchpad-binary
+   =goal>
+   isa phase
+   step update-pad
+
+   =retrieval>
+   isa arithmetic-fact
+   result =ans
+
+   =imaginal>
+   isa scratchpad
+   - x   nil
+   - y   nil
+   result  nil
+
+   ==>
+   
+   =imaginal>
+   isa scratchpad
+   result  =ans
+   position    3
+
+   -goal>
+   -retrieval>
+   )
+
+;;; --------------------------------------------------------------
+;;; When it's done, just press a button to proceed
+;;; --------------------------------------------------------------
+
+(p go-through-inputs
+   "When all calculations are completed, just presses a key"
+
+   ?retrieval>
+   buffer       empty
+   state        free
+   
+   ?imaginal>
+   state        free
+   
+   =imaginal>
+   isa          scratchpad
+   result       =RES
+   position     3
+   
+
+   ?visual>
+   state free
+
+   ?manual>
+   preparation  free
+   processor free
+   execution    free
+
+   ==>
+   
+   =imaginal>
+   
+   +manual>
+   isa          press-key
+   key          "2"
+   )
 
 ;;; RESPONSE
 
@@ -352,8 +571,6 @@
     execution    free
     
  ==>
-    
-  =visual>
 
   +manual>
     isa          press-key
