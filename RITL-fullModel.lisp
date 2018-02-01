@@ -58,15 +58,19 @@
 ;;; Declarative memory
 (add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
 	(/ isa chunk) (unary isa chunk) (binary isa chunk))
-; (add-dm (inst isa ritl-rule task1 double task2 half task3 add)) Is this still necesarry?
-; (add-dm (stimulus isa ritl-stimulus x 5 y 6))
-
 
 ;;; Operations
 (add-dm (double isa operation task double argument1 x operator * argument2 2 type unary))
 (add-dm (half isa operation task half argument1 x operator / argument2 2 type unary))
-(add-dm (add isa operation task add argument1 x operator + argument2 y type binary))
 (add-dm (third isa operation task third argument1 x operator / argument2 3 type unary))
+(add-dm (triple isa operation task triple argument1 x operator * argument2 3 type unary))
+(add-dm (increment isa operation task increment argument1 x operator + argument2 1 type unary))
+(add-dm (decrement isa operation task decrement argument1 x operator - argument2 1 type unary))
+
+(add-dm (add isa operation task add argument1 x operator + argument2 y type binary))
+(add-dm (substract isa operation task substract argument1 x operator - argument2 y type binary))
+(add-dm (multiply isa operation task multiply argument1 x operator * argument2 y type binary))
+(add-dm (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 
 ;;; ENCODING
