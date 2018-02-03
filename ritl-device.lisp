@@ -213,9 +213,12 @@
     (dotimes (i n)
       (push *test* results))))
 
-(defun generate-trials (stim-list)
+(defun generate-trials (stim-list &optional (num 10))
   (declare (ignore stim-list))
-  (mapcar #'make-trial (list *test*)))
+  (let ((trials nil))
+    (dotimes (i num)
+      (push *test* trials))
+    (mapcar #'make-trial trials)))
 
 (defun trial-rt (trial)
   (- (trial-response-time trial)
