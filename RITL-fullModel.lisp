@@ -83,7 +83,7 @@
 
    ?visual-location>
    state free
-
+   buffer empty
 
    ?visual>
    state free
