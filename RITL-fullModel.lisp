@@ -5,7 +5,7 @@
 
 (define-model encoding
 
-(sgp :trace-detail            high 
+(sgp :trace-detail            medium 
      :show-focus              t 
      :esc                     t 
      :lf                      0.9 
@@ -75,16 +75,20 @@
 
 ;;; ENCODING
 
-(p prepare-encoding 
+(p initiate-encoding 
    "Prepares to encode operations when the instructions are on"
   ?retrieval>
     state        free
     buffer       empty
 
+   ?visual-location>
+   state free
+
+
    ?visual>
-     state free
-     buffer empty
-   ?manual>
+   state free
+
+     ?manual>
      preparation free
      processor free
      execution free
@@ -98,7 +102,9 @@
   +goal>
     isa phase
     step encoding
-)
+    )
+
+
 
 (p encode-instructions
   ?retrieval>
@@ -123,7 +129,7 @@
     task2 =second
     task3 =third
 
-    +goal>
+    =goal>
     isa phase
     step encoding-done
 
@@ -507,6 +513,10 @@
    +manual>
    isa          press-key
    key          "2"
+
+   +goal>
+   isa phase
+   step respond
    )
 
 ;;; RESPONSE
@@ -518,10 +528,10 @@
   ?retrieval>
     state        free
     buffer       empty
-
-  ?goal>
-    state free
-    buffer empty
+    
+    =goal>
+    isa phase
+    step respond
 
     ?imaginal>
     state busy
@@ -536,9 +546,7 @@
     kind ritl-location
     :attended nil
    
-  +goal>
-    isa phase
-    step respond
+  =goal>
     
   =imaginal>
 )
@@ -555,10 +563,17 @@
    ?manual>
     preparation  free
     execution    free
+
+    =goal>
+    isa phase
+    step respond
 ==>
   +manual>
     isa          press-key
     key          "2"
+
+    -goal>
+    -imaginal>
  )
 
 (p answer-no
@@ -573,12 +588,19 @@
   ?manual>
     preparation  free
     execution    free
+
+    =goal>
+    isa phase
+    step respond
     
  ==>
 
   +manual>
     isa          press-key
     key          "3"
+
+    -goal>
+    -imaginal>
 )
 
 )
