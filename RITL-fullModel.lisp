@@ -83,7 +83,6 @@
 
    ?visual-location>
    state free
-   buffer empty
 
    ?visual>
    state free
@@ -497,7 +496,6 @@
    result       =RES
    position     3
    
-
    ?visual>
    state free
 
@@ -522,6 +520,7 @@
 ;;; RESPONSE
 
 (p prepare-response
+   "This production might be superfluous!"
   ?visual>
     state free
 
@@ -534,7 +533,6 @@
     step respond
 
     ?imaginal>
-    state busy
     buffer full
 
   =imaginal>
