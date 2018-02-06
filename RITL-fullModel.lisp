@@ -15,7 +15,10 @@
      ;; Productions
      :epl                     t 
      :ul                      t
-     :ult			      t
+     :ult		      t
+     :tt                      4
+     :pct                     t
+     :alpha                   0.2
 
      ;; Perceptual params
      :auto-attend             t 

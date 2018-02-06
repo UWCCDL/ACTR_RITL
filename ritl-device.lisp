@@ -90,7 +90,7 @@
 
 (defparameter *test* '((double third add) (5 9) 13))
 
-(defparameter *responses* '((f . yes) (j . no)) "Left hand = Yes, Right hand = No")
+(defparameter *responses* '((2 . yes) (3 . no)) "Left hand = Yes, Right hand = No")
 
 (defun ritl-rule (stim)
   (first stim))
@@ -213,22 +213,42 @@
     (dotimes (i n)
       (push *test* results))))
 
-(defun generate-trials (stim-list &optional (num 10))
+(defun generate-trials (stim-list &optional (num 40))
   (declare (ignore stim-list))
   (let ((trials nil))
     (dotimes (i num)
       (push *test* trials))
     (mapcar #'make-trial trials)))
 
-(defun trial-rt (trial)
-  (- (trial-response-time trial)
-     (trial-onset-time trial)))
+(defun trial-execution-rt (trial)
+  (- (trial-execution-response-time trial)
+     (trial-execution-onset-time trial)))
+
+(defun trial-rule-rt (trial)
+  (- (trial-rule-response-time trial)
+     (trial-rule-onset-time trial)))
 
 (defun trial-accuracy (trial)
   (if (equal (trial-correct-response trial)
 	     (trial-actual-response trial))
       1
       0)) 
+
+(defun trial-stats (trial)
+  (list (trial-rule-rt trial)
+	(trial-execution-rt trial)
+	(trial-accuracy trial)))
+
+(defun experiment-stats ()
+  (let* ((trials (experiment-log (current-device)))
+	 (stats (mapcar #'trial-stats trials))) 
+    (let ((rules (mapcar #'first stats))
+	  (execs (mapcar #'second stats))
+	  (accs (mapcar #'third stats)))
+      (list (apply #'mean rules)
+	    (apply #'mean execs)
+	    (apply #'mean accs)))))
+      
 
 (defparameter *transitions* '((rule . pause1) (pause1 . execution)
 			      (execution . pause2) (pause2 . probe)
@@ -265,9 +285,12 @@
 
 (defmethod respond ((task ritl-task) key)
   "Records a response in the PSS task"
+  ;;(setf key (read-from-string (format nil "~A" key)))
+  ;;(format t "---> RESPOND ~A, it's a ~A~%" key (type-of key))
   (unless (null (current-trial task))
     (let* ((trial (current-trial task))
 	   (response (cdr (assoc key *responses*))))
+      ;;(format t "---> ---> THE RESPONSE WAS ~A~%" response) 
       (when (equal (task-phase task) 'probe)
 	(set-trial-actual-response trial response))
       (when (act-r-loaded?)
@@ -276,6 +299,7 @@
 
 (defmethod next ((task ritl-task))
   "Moves to the next step in a RITL Task timeline"
+  (format t "---> NEXT CALLED @ ~A During phase ~A" (mp-time) (task-phase (current-device)))
   (let* ((current-phase (task-phase task))
 	 (next-phase (cdr (assoc current-phase *transitions*))))
     
@@ -328,9 +352,9 @@
 					      (trials task)))
 	      (when (act-r-loaded?)
 		(set-trial-rule-onset-time (current-trial task)
-					   (mp-time))
-		(schedule-event-relative 1 'next
-					 :params (list task)))))))
+					   (mp-time)))))))
+		;(schedule-event-relative 1 'next
+		;			 :params (list task)))))))
     
     (setf (task-phase task) next-phase))
 	  
@@ -364,7 +388,7 @@
 
 (defmethod device-handle-keypress ((task ritl-task) key)
   "Converts the key into a symbol and passes it on to the task manager"
-  (respond task (intern (string-capitalize (format nil "~a" key)))))
+  (respond task (read-from-string (format nil "~a" key))))
 
 			   
 (defmethod device-handle-click ((task ritl-task))
