@@ -8,10 +8,12 @@
 (sgp :trace-detail            medium 
      :show-focus              t 
      :esc                     t 
-     :lf                      0.9 
+     :lf                      0.9
+     :bll                     0.5
+     :blc                     2
      :mas                     1.6 
-     :imaginal-activation     1.0 
-
+     :imaginal-activation     1.0
+     
      ;; Productions
      :epl                     t 
      :ul                      t

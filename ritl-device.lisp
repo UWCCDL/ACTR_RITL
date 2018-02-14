@@ -287,7 +287,9 @@
   "Records a response in the PSS task"
   ;;(setf key (read-from-string (format nil "~A" key)))
   ;;(format t "---> RESPOND ~A, it's a ~A~%" key (type-of key))
-  (unless (null (current-trial task))
+  (unless (or (null (current-trial task))
+	      (member (task-phase task) *pauses*))
+			
     (let* ((trial (current-trial task))
 	   (response (cdr (assoc key *responses*))))
       ;;(format t "---> ---> THE RESPONSE WAS ~A~%" response) 
@@ -299,9 +301,9 @@
 
 (defmethod next ((task ritl-task))
   "Moves to the next step in a RITL Task timeline"
-  (format t "---> NEXT CALLED @ ~A During phase ~A" (mp-time) (task-phase (current-device)))
   (let* ((current-phase (task-phase task))
 	 (next-phase (cdr (assoc current-phase *transitions*))))
+    (format t "---> NEXT CALLED @ ~A: Transition from phase ~A to phase ~A" (mp-time) current-phase next-phase)
     
     (cond
       ;;; Rule
