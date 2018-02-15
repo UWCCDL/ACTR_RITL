@@ -136,7 +136,7 @@
 
     =goal>
     isa phase
-    step encoding-done
+    step done
 
 )
 
@@ -150,12 +150,12 @@
   ?visual>
      state free
 
-  =imaginal>
-  isa ritl-rule
-  task1 =first
-  task2 =second
-  task3 =third
-  
+     ?imaginal>
+     buffer full
+     state free
+
+     =imaginal>
+     isa ritl-task
 
   ?manual>
     preparation  free
@@ -164,7 +164,7 @@
 
   =goal>
     isa phase
-    step encoding-done
+    step done
 
     ==>
 
@@ -179,42 +179,12 @@
 
 ;;; EXECUTION
 
-(p prepare-execution
-   ?goal>
-    state free
-    buffer empty
-   
-   ?visual>
-    state free
-   
-   ?manual>
-    preparation free
-    processor free
-    execution free
-
-   =imaginal>
-    isa   ritl-task
-    task1 =first
-    task2 =second
-    task3 =third   
-
-   ==>
-   
-   +goal>
-   isa phase
-   step setup-calculation
-   
-   =imaginal>
-
-   )
-
 ;;; Calculate x
 
 (p calculate-x
 
-   =goal>
-   isa phase
-   step setup-calculation
+   ?goal>
+   buffer empty
 
    ?retrieval>
    state free
@@ -501,10 +471,15 @@
    
    =imaginal>
    isa ritl-task
-   x  =ans
+   result  =ans
+   x nil
+   y nil
    task3 nil
 
-   -goal>
+   +goal>
+   isa phase
+   step done
+   
    -retrieval>
    )
 
@@ -512,75 +487,9 @@
 ;;; When it's done, just press a button to proceed
 ;;; --------------------------------------------------------------
 
-(p go-through-inputs
-   "When all calculations are completed, just presses a key"
-
-   ?retrieval>
-   buffer       empty
-   state        free
-   
-   ?imaginal>
-   state        free
-   
-   =imaginal>
-   isa          ritl-task
-   task1       nil
-   task2       nil
-   task3      nil
-   x =ans
-   
-   ?visual>
-   state free
-
-   ?manual>
-   preparation  free
-   processor free
-   execution    free
-
-   ==>
-   
-   =imaginal>
-   
-   +manual>
-   isa          press-key
-   key          "2"
-
-   +goal>
-   isa phase
-   step respond
-   )
 
 ;;; RESPONSE
 
-(p prepare-response
-   "This production might be superfluous!"
-  ?visual>
-    state free
-
-  ?retrieval>
-    state        free
-    buffer       empty
-    
-    =goal>
-    isa phase
-    step respond
-
-    ?imaginal>
-    buffer full
-
-  =imaginal>
-    result =ans
-  
- ==>
-   
-  +visual-location>
-    kind ritl-location
-    :attended nil
-   
-  =goal>
-    
-  =imaginal>
-)
 
 (p answer-yes
   =visual>
@@ -588,16 +497,16 @@
     probe       =VAL
     
   =imaginal>
-    isa         ritl-task
-    x      =VAL
+  isa         ritl-task
+  task1 nil
+  task2 nil
+  task3 nil
+    result      =VAL
     
    ?manual>
     preparation  free
     execution    free
 
-    =goal>
-    isa phase
-    step respond
 ==>
   +manual>
     isa          press-key
@@ -613,16 +522,16 @@
     probe       =VAL
     
   =imaginal>
-    isa         ritl-task
-    - x      =VAL
+  isa         ritl-task
+  task1 nil
+  task2 nil
+  task3 nil
+    - result      =VAL
     
   ?manual>
     preparation  free
     execution    free
 
-    =goal>
-    isa phase
-    step respond
     
  ==>
 
