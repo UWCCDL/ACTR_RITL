@@ -141,9 +141,54 @@
 
     =goal>
     isa phase
-    step done
+    step encoding-retrieval
 
-)
+    =visual>
+
+    )
+
+(p clear-imaginal
+   ?imaginal>
+   buffer full
+
+   =goal>
+   isa phase
+   step encoding-retrieval
+
+   ==>
+   =goal>
+
+   -imaginal>
+   )
+
+(p remember-instructions
+   ?imaginal>
+   state        free
+   buffer       empty
+   
+   =goal>
+   isa phase
+   step encoding-retrieval
+
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered
+
+   )
 
 ;;; --------------------------------------------------------------
 ;;; Press a key when done
@@ -153,19 +198,14 @@
    "Presses a key after instructions have been encoded"
 
    =retrieval>
-   isa operation
-   task =first
-   type unary
+   isa ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
 
   ?visual>
      state free
 
-     ?imaginal>
-     buffer full
-     state free
-
-     =imaginal>
-     isa ritl-task
 
   ?manual>
     preparation  free
@@ -174,17 +214,24 @@
 
   =goal>
     isa phase
-    step done
+    step remembered
 
     ==>
 
-    =retrieval>
+    +retrieval>
+    isa operation
+    task =first
+    type unary
 
     +goal>
     isa phase
     step execution-x
 
-  =imaginal>
+    +imaginal>
+    isa ritl-task
+    task1 =first
+    task2 =second
+    task3 =third
 
   +manual>
     isa          press-key
