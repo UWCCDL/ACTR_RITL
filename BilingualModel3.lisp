@@ -140,21 +140,25 @@
    type unary
 
    =goal>
+   isa phase
+   step encoding-retrieval
+
+   =visual>
 
    )
 
 (p clear-imaginal
-   =imaginal>
+   ?imaginal>
    buffer full
 
    =goal>
    isa phase
-   step encoding
+   step encoding-retrieval
 
    ==>
    =goal>
-   isa phase
-   step encoding-retrieval
+
+   -imaginal>
    )
 
 (p remember-instructions
@@ -203,7 +207,7 @@
   ?visual>
      state free
 
-   =imaginal>
+   ?imaginal>
    state free
    buffer empty
 
