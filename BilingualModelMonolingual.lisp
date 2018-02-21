@@ -38,13 +38,10 @@
 ;;; Visual
 (chunk-type (ritl-screen (:include visual-object))
 	    kind nature)
-
 (chunk-type (ritl-rule (:include visual-object))
 	    task1 task2 task3)
-
 (chunk-type (ritl-inputs (:include visual-object))
 	    x y)
-
 (chunk-type (ritl-probe (:include visual-object))
 	    kind probe)
 
@@ -63,17 +60,17 @@
 	(/ isa chunk) (unary isa chunk) (binary isa chunk))
 
 ;;; Operations
-(add-dm (double isa operation task double argument1 x operator * argument2 2 type unary))
-(add-dm (half isa operation task half argument1 x operator / argument2 2 type unary))
-(add-dm (third isa operation task third argument1 x operator / argument2 3 type unary))
-(add-dm (triple isa operation task triple argument1 x operator * argument2 3 type unary))
-(add-dm (increment isa operation task increment argument1 x operator + argument2 1 type unary))
-(add-dm (decrement isa operation task decrement argument1 x operator - argument2 1 type unary))
+(add-dm (double isa operation task double argument1 x operator * argument2 2 type unary)
+    (half isa operation task half argument1 x operator / argument2 2 type unary)
+    (third isa operation task third argument1 x operator / argument2 3 type unary)
+    (triple isa operation task triple argument1 x operator * argument2 3 type unary)
+    (increment isa operation task increment argument1 x operator + argument2 1 type unary)
+    (decrement isa operation task decrement argument1 x operator - argument2 1 type unary))
 
-(add-dm (add isa operation task add argument1 x operator + argument2 y type binary))
-(add-dm (substract isa operation task substract argument1 x operator - argument2 y type binary))
-(add-dm (multiply isa operation task multiply argument1 x operator * argument2 y type binary))
-(add-dm (divide isa operation task divide argument1 x operator / argument2 y type binary))
+(add-dm (add isa operation task add argument1 x operator + argument2 y type binary)
+    (substract isa operation task substract argument1 x operator - argument2 y type binary)
+    (multiply isa operation task multiply argument1 x operator * argument2 y type binary)
+    (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 
 ;;; ENCODING
@@ -187,7 +184,6 @@
    =goal>
    isa phase
    step remembered
-
    )
 
 
@@ -204,8 +200,8 @@
    task2 =second
    task3 =third
 
-  ?visual>
-     state free
+   ?visual>
+   state free
 
    ?imaginal>
    state free
@@ -583,10 +579,9 @@
    probe       =VAL
    
    =imaginal>
-   isa         ritl-task
-   task1 nil
-   task2 nil
-   task3 nil
+   isa         ritl-result
+   - x nil
+   - y nil
    - result      =VAL
    
    ?manual>
