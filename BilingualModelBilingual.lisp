@@ -28,7 +28,7 @@
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
 
 ;;; RITL chunks
-(chunk-type ritl-task kind task1 task2  task3 x y)
+(chunk-type ritl-task kind task1 task2  task3 x y result)
 (chunk-type phase step)
 
 ;;; Arithmetic chunks
