@@ -578,10 +578,11 @@
     probe       =VAL
     
   =imaginal>
-  isa         ritl-result
-    - x nil
-    - y nil
-    - result      =VAL
+  isa         ritl-task
+  task1 nil
+  task2 nil
+  task3 nil
+  - result      =VAL
     
   ?manual>
     preparation  free
