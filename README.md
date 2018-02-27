@@ -2,8 +2,7 @@
 
 ## About this model
 
-The model currently understands given instructions and performs one RITL trial. 
-I assume that the model understands individual instructions (e.g. "add" means x+y). Performance may improve when a set of familiar instructions ("double"/"half"/"add") has been presented earlier.
+Model performs a RITL task with 40 trials. Stimuli remain the same. The two most recent models have either one chunk with all presented information (instructions and variables), or two separate chunks.
 
 ## Running the model
 
@@ -11,7 +10,9 @@ I assume that the model understands individual instructions (e.g. "add" means x+
 
 * Load the device-file ritl-device.lisp. It presents the stimuli and interprets button presses
 
-* Load the appropriate model: RITL-fullModel.lisp.
+* Load the appropriate model. The two most recent models are BilingualModelBilingual.lisp and BilingualModelMonolingual.lisp
+
+* Run a reload using (ritl-reload)
 
 * Run the model using ACT-R commands, e.g. (run 20).
 
