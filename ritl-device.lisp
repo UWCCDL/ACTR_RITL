@@ -303,7 +303,7 @@
   "Moves to the next step in a RITL Task timeline"
   (let* ((current-phase (task-phase task))
 	 (next-phase (cdr (assoc current-phase *transitions*))))
-    (format t "---> NEXT CALLED @ ~A: Transition from phase ~A to phase ~A" (mp-time) current-phase next-phase)
+    ;;(format t "---> NEXT CALLED @ ~A: Transition from phase ~A to phase ~A" (mp-time) current-phase next-phase)
     
     (cond
       ;;; Rule
