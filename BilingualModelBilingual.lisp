@@ -24,6 +24,8 @@
      :auto-attend             t 
      :visual-finst-span       10.0)
 
+(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production goal visual-location))
+
 ;;; Arithmetic facts
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
 
