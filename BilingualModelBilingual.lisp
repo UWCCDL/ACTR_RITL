@@ -13,11 +13,11 @@
      :imaginal-activation     1.0 
 
      ;; Productions
- ;    :epl                     t 
+     :epl                     t 
      :ul                      t
      :ult		      t
      :tt                      4
-;     :pct                     t
+     :pct                     t
      :alpha                   0.2
 
      ;; Perceptual params
