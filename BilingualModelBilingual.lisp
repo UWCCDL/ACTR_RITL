@@ -13,18 +13,18 @@
      :imaginal-activation     1.0 
 
      ;; Productions
- ;    :epl                     t 
+     :epl                     t 
      :ul                      t
      :ult		      t
      :tt                      4
-;     :pct                     t
+     :pct                     t
      :alpha                   0.2
 
      ;; Perceptual params
      :auto-attend             t 
      :visual-finst-span       10.0)
 
-(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production goal visual-location))
+(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production goal visual-location imaginal))
 
 ;;; Arithmetic facts
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
