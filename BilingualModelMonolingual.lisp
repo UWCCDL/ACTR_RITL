@@ -5,10 +5,10 @@
 
 (define-model encoding
 
-(sgp :trace-detail            medium 
+(sgp :trace-detail            low 
      :show-focus              t 
      :esc                     t 
-     :lf                      0.9 
+     :lf                      0.5 
      :mas                     1.6 
      :imaginal-activation     1.0 
 
@@ -131,11 +131,6 @@
     task2 =second
     task3 =third
 
-    +retrieval>
-    isa operation
-    task =first
-   type unary
-
    =goal>
    isa phase
    step encoding-retrieval
@@ -146,6 +141,7 @@
 
 (p clear-imaginal
    ?imaginal>
+   state free
    buffer full
 
    =goal>
