@@ -8,7 +8,7 @@
 (sgp :trace-detail            low 
      :show-focus              t 
      :esc                     t 
-     :lf                      0.5 
+     :lf                      0.9 
      :mas                     1.6 
      :imaginal-activation     1.0 
 

@@ -24,7 +24,7 @@
      :auto-attend             t 
      :visual-finst-span       10.0)
 
-(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production goal visual-location imaginal))
+;(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production retrieval goal visual-location imaginal))
 
 ;;; Arithmetic facts
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
@@ -130,11 +130,6 @@
     task1 =first
     task2 =second
     task3 =third
-
-    +retrieval>
-    isa operation
-    task =first
-    type unary
 
     =goal>
     isa phase
