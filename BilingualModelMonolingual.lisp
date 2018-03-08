@@ -17,8 +17,9 @@
      :ul                      t
      :ult		      t
      :tt                      4
-     :pct                     t
+    ; :pct                     t
      :alpha                   0.2
+     :bll                     t
 
      ;; Perceptual params
      :auto-attend             t 
@@ -27,6 +28,7 @@
 ;;; Arithmetic facts
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
 
+
 ;;; RITL chunks
 (chunk-type ritl-task kind task1 task2 task3)
 (chunk-type ritl-result kind x y result task)
@@ -34,6 +36,7 @@
 
 ;;; Arithmetic chunks
 (chunk-type operation task type argument1 operator argument2 position)
+;(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production retrieval goal visual-location imaginal))
 
 ;;; Visual
 (chunk-type (ritl-screen (:include visual-object))
