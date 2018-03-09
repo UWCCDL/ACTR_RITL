@@ -2625,3 +2625,6 @@
         (isa arithmetic-fact operation / arg1 49 arg2 47 result 1)
         (isa arithmetic-fact operation / arg1 49 arg2 48 result 1)
         (isa arithmetic-fact operation / arg1 49 arg2 49 result 1))
+
+;; Set all facts to high levels of activation
+(sdp-fct `(,(no-output (sdm isa arithmetic-fact)) :creation-time -10000000 :references 2000))

@@ -19,7 +19,7 @@
      :tt                      4
     ; :pct                     t
      :alpha                   0.2
-     :bll                     t
+     :bll                     0.5
 
      ;; Perceptual params
      :auto-attend             t 
