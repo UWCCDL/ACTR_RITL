@@ -220,6 +220,15 @@
       (push *test* trials))
     (mapcar #'make-trial trials)))
 
+(defun load-trials (&optional (filename "Trials"))
+  (let ((results nil))
+    (with-open-file (in filename)
+      (let ((current (read in nil)))
+	(while current
+	  (push current results)
+	  (setf current (read in nil)))))
+    (mapcar #'make-trial (reverse results))))
+	 
 (defun trial-execution-rt (trial)
   (- (trial-execution-response-time trial)
      (trial-execution-onset-time trial)))
