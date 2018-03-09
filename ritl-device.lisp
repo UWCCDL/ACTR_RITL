@@ -66,7 +66,7 @@
 
 (defparameter *operators* '(double half
 			    triple third
-			    increase decrease
+			    increment decrement
 			    add minus
 			    times divide))
 
@@ -220,13 +220,13 @@
       (push *test* trials))
     (mapcar #'make-trial trials)))
 
-(defun load-trials (&optional (filename "Trials"))
-  (let ((results nil))
-    (with-open-file (in filename)
-      (let ((current (read in nil)))
-	(while current
-	  (push current results)
-	  (setf current (read in nil)))))
+(defun load-trials (&optional (filename "INST:trials"))
+  (let ((results nil)
+	(file (open (translate-logical-pathname filename))))
+    (let ((current (read file nil)))
+      (while current
+	(push current results)
+	(setf current (read file nil))))
     (mapcar #'make-trial (reverse results))))
 	 
 (defun trial-execution-rt (trial)
@@ -236,6 +236,10 @@
 (defun trial-rule-rt (trial)
   (- (trial-rule-response-time trial)
      (trial-rule-onset-time trial)))
+
+(defun trial-probe-rt (trial)
+  (- (trial-probe-response-time trial)
+     (trial-probe-onset-time trial)))
 
 (defun trial-accuracy (trial)
   (if (equal (trial-correct-response trial)
@@ -274,7 +278,7 @@
    (index :accessor index
 	  :initform nil)
    (trials :accessor trials
-	   :initform (generate-trials (generate-stimuli)))
+	   :initform (load-trials)) ;;(generate-trials (generate-stimuli)))
    (current-trial :accessor current-trial
 		  :initform nil)
    (experiment-log :accessor experiment-log
@@ -390,6 +394,37 @@
 					(mp-time)))))))
   (when (act-r-loaded?) 
     (schedule-event-relative 0 'proc-display :params nil)))
+
+    
+
+(defun summarize-trial (trial)
+  (list (ritl-rule (trial-stimulus trial))
+	(ritl-inputs (trial-stimulus trial))
+	(ritl-probe (trial-stimulus trial))
+	(trial-correct-response trial)
+	(trial-rule-rt trial)
+	(trial-execution-rt trial)
+	(trial-probe-rt trial)
+	(trial-accuracy trial)))
+
+(defparameter *col-names* '("Rule" "Inputs" "Probe" "ProbeCorrect" "EncodingRT" "ExecutionRT" "ProbeRT" "Accuracy"))
+
+(defun write-csv (table filename)
+  "Writes a list of trials (formatted as in 'extract-results') in a CSV file"
+  (with-open-file (out filename
+		       :direction :output
+		       :if-exists :append
+		       :if-does-not-exist :create)
+    (dolist (row table)
+      (format out "~{~a~^,~}~%" row))))
+
+(defun save-log (&optional (filename "model.txt"))
+  (let* ((log (mapcar #'summarize-trial
+		      (reverse (experiment-log (current-device)))))
+	 (table (push *col-names* log)))
+    (write-csv table filename)))
+
+  
 
 ;;; ------------------------------------------------------------------
 ;;; ACT-R DEVICE INTERFACE
