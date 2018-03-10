@@ -69,8 +69,8 @@
     (decrement isa operation task decrement argument1 x operator - argument2 1 type unary))
 
 (add-dm (add isa operation task add argument1 x operator + argument2 y type binary)
-    (substract isa operation task substract argument1 x operator - argument2 y type binary)
-    (multiply isa operation task multiply argument1 x operator * argument2 y type binary)
+    (subtract isa operation task substract argument1 x operator - argument2 y type binary)
+    (times isa operation task multiply argument1 x operator * argument2 y type binary)
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 ;;; ENCODING
