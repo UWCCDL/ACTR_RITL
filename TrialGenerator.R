@@ -20,10 +20,12 @@ exportStimuli <- paste("((", randomStimuliExperiment$operatorTask1, randomStimul
 # write(exportStimuli,"~/Documents/GitHub/ACTR_RITL",ncolumns=1) # Permission denied
 write(exportStimuli,"trials",ncolumns=1)
 
+
+
 ## MAKE DATA FROM SCRATCH
-# Define simuli
-unary <- c("DECREMENT", "THIRD", "INCREMENT", "TRIPLE", "HALF","DOUBLE")
-binary <- c("SUBTRACT","TIMES","DIVIDE","ADD")
+# Define simuli (remove decrement and subtract for now)
+unary <- c("THIRD", "INCREMENT", "TRIPLE", "HALF","DOUBLE")
+binary <- c("TIMES","DIVIDE","ADD")
 
 #Define functions
 DECREMENT <- function(x) {x-1}
