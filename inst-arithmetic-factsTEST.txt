@@ -2625,7 +2625,7 @@
         (isa arithmetic-fact operation / arg1 49 arg2 47 result 1)
         (isa arithmetic-fact operation / arg1 49 arg2 48 result 1)
         (isa arithmetic-fact operation / arg1 49 arg2 49 result 1)
-(isa arithmetic-fact operation - arg2 1 result 1 arg1 2)
+        (isa arithmetic-fact operation - arg2 1 result 1 arg1 2)
         (isa arithmetic-fact operation - arg2 1 result 2 arg1 3)
         (isa arithmetic-fact operation - arg2 1 result 3 arg1 4)
         (isa arithmetic-fact operation - arg2 1 result 4 arg1 5)
