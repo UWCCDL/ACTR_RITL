@@ -15,7 +15,7 @@ randomStimuliExperiment <- data.frame(
   x = randomSample$X, y = randomSample$Y, probe = randomSample$Probe)
 
 # Example format: ((double third add) (5 9) 13))
-exportStimuli <- paste("((", randomStimuliExperiment$operatorTask1, randomStimuliExperiment$operatorTask2, randomStimuliExperiment$operatorTask3, ")","(",randomStimuliExperiment$x,randomStimuliExperiment$y,")",randomStimuliExperiment$probe,"))")
+exportStimuli <- paste("((", randomStimuliExperiment$operatorTask1, randomStimuliExperiment$operatorTask2, randomStimuliExperiment$operatorTask3, ")","(",randomStimuliExperiment$x,randomStimuliExperiment$y,")",randomStimuliExperiment$probe,")")
 
 # write(exportStimuli,"~/Documents/GitHub/ACTR_RITL",ncolumns=1) # Permission denied
 write(exportStimuli,"trials",ncolumns=1)
@@ -118,5 +118,5 @@ session2Trials <- generateSession2Trials()
 
 modelTrials <- rbind(session1Trials,session2Trials)
 
-exportStimuli <- paste("((", modelTrials$operatorTask1, modelTrials$operatorTask2, modelTrials$operatorTask3, ")","(",modelTrials$x,modelTrials$y,")",modelTrials$probe,"))")
+exportStimuli <- paste("((", modelTrials$operatorTask1, modelTrials$operatorTask2, modelTrials$operatorTask3, ")","(",modelTrials$x,modelTrials$y,")",modelTrials$probe,")")
 write(exportStimuli,"trials",ncolumns=1)
