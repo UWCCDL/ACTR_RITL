@@ -48,22 +48,26 @@ generatePracticeTrials <- function(numPracticedCombinations = 2) {
   while (nrow(practiceInst)/10 != numPracticedCombinations) {
     practiceInst <- rbind(practiceInst,data.frame(
       operatorTask1 = rep(sample(unary,1),10), operatorTask2 = rep(sample(unary,1),10), operatorTask3 = rep(sample(binary,1),10),
-      x = sample(1:9,10,T), y = sample(1:9,10,T), probe = 0,  stringsAsFactors = F))
+      x = 0, y = 0, probe = 0,  stringsAsFactors = F))
   }
+  
   
   # Solve operations
   for (i in 1:length(practiceInst$probe)) {
-    tempX <- match.fun(practiceInst$operatorTask1[i])(practiceInst$x[i])
-    tempY <- match.fun(practiceInst$operatorTask2[i])(practiceInst$y[i])
-    practiceInst$probe[i] <- floor(match.fun(practiceInst$operatorTask3[i])(tempX,tempY))
-    
-    # If the result is not between 1 en 49, resample x & y
     while((1>practiceInst$probe[i]) | (practiceInst$probe[i]>49)) {
       practiceInst$x[i] <- sample(1:9,1)
       practiceInst$y[i] <- sample(1:9,1)
       
       tempX <- match.fun(practiceInst$operatorTask1[i])(practiceInst$x[i])
       tempY <- match.fun(practiceInst$operatorTask2[i])(practiceInst$y[i])
+      while (!floor(tempX)) {
+        practiceInst$x[i] <- sample(1:9,1)
+        tempX <- match.fun(practiceInst$operatorTask1[i])(practiceInst$x[i])
+      }
+      while (!floor(tempY)) {
+        practiceInst$y[i] <- sample(1:9,1)
+        tempY <- match.fun(practiceInst$operatorTask2[i])(practiceInst$y[i])
+      }
       practiceInst$probe[i] <- floor(match.fun(practiceInst$operatorTask3[i])(tempX,tempY))
     }
   }
@@ -85,21 +89,24 @@ generateSession2Trials <- function(numPracticedCombinations = 2, practiceInst = 
   # WARNING: Chances are that filler items are identical to practiced trials
   practiceInst <- rbind(practiceInst,data.frame(
     operatorTask1 = sample(unary,numPracticedCombinations*10,T), operatorTask2 = sample(unary,numPracticedCombinations*10,T), operatorTask3 = sample(binary,numPracticedCombinations*10,T),
-    x = sample(1:9,numPracticedCombinations*10,T), y = sample(1:9,numPracticedCombinations*10,T), probe = 0,  stringsAsFactors = F))
+    x = 0, y = 0, probe = 0,  stringsAsFactors = F))
   
   # Solve operations
   for (i in 1:length(practiceInst$probe)) {
-    tempX <- match.fun(practiceInst$operatorTask1[i])(practiceInst$x[i])
-    tempY <- match.fun(practiceInst$operatorTask2[i])(practiceInst$y[i])
-    practiceInst$probe[i] <- floor(match.fun(practiceInst$operatorTask3[i])(tempX,tempY))
-    
-  # If the result is not between 1 en 49, resample x & y
     while((1>practiceInst$probe[i]) | (practiceInst$probe[i]>49)) {
       practiceInst$x[i] <- sample(1:9,1)
       practiceInst$y[i] <- sample(1:9,1)
       
       tempX <- match.fun(practiceInst$operatorTask1[i])(practiceInst$x[i])
       tempY <- match.fun(practiceInst$operatorTask2[i])(practiceInst$y[i])
+      while (!floor(tempX)) {
+        practiceInst$x[i] <- sample(1:9,1)
+        tempX <- match.fun(practiceInst$operatorTask1[i])(practiceInst$x[i])
+      }
+      while (!floor(tempY)) {
+        practiceInst$y[i] <- sample(1:9,1)
+        tempY <- match.fun(practiceInst$operatorTask2[i])(practiceInst$y[i])
+      }
       practiceInst$probe[i] <- floor(match.fun(practiceInst$operatorTask3[i])(tempX,tempY))
     }
   }
