@@ -3,7 +3,7 @@
 #+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
 				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
 
-(define-model encoding
+(define-model bilingual
 
 (sgp :trace-detail            medium 
      :show-focus              t 
