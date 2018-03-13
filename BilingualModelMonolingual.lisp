@@ -23,7 +23,8 @@
 
      ;; Perceptual params
      :auto-attend             t 
-     :visual-finst-span       10.0)
+     :visual-finst-span       10.0
+     )
 
 ;;; Arithmetic facts
 (load (translate-logical-pathname "INST:inst-arithmetic-facts.lisp"))
@@ -76,7 +77,7 @@
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 ;; Set all operationa to high levels of activation
-(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 10000))
+(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2000))
 
 ;;; ENCODING
 
@@ -103,6 +104,10 @@
   ?goal>
     state free
     buffer empty
+
+    ?temporal>
+    state free
+    buffer empty
 ==>
   +visual-location>
      kind ritl-location
@@ -110,10 +115,12 @@
   +goal>
     isa phase
     step encoding
+    
     )
 
 
 (p encode-instructions
+   "encode instructions and start waiting"
   ?imaginal>
     state        free
     buffer       empty
@@ -128,8 +135,8 @@
     task2 =second
     task3 =third
 
-==>
-
+    ==>
+    
   +imaginal>
     isa   ritl-task
     task1 =first
@@ -141,7 +148,6 @@
    step encoding-retrieval
 
    =visual>
-
    )
 
 (p clear-imaginal
@@ -153,13 +159,15 @@
    isa phase
    step encoding-retrieval
 
+
    ==>
    =goal>
 
    -imaginal>
-   )
 
-(p remember-instructions
+  )
+
+(p retrieve-instructions
    ?imaginal>
    state        free
    buffer       empty
@@ -268,8 +276,6 @@
  =visual>
 
  =imaginal>
- isa ritl-task
- task1 nil
    
    +retrieval>
    isa arithmetic-fact
@@ -286,6 +292,7 @@
 
    =imaginal>
    isa ritl-task
+   task1 =first
    task2 =second
    task3 =third
 
@@ -301,6 +308,7 @@
 
    +retrieval>
    isa ritl-task
+   task1 =first
    task2 =second
    task3 =third
 
@@ -429,6 +437,8 @@
 
    =retrieval>
    isa ritl-task
+   task1 =first
+   task2 =second
    task3 =third
 
    ==>
@@ -588,6 +598,9 @@
    ?manual>
    preparation  free
    execution    free
+    ?temporal>
+    state free
+    buffer empty
 
    
    ==>

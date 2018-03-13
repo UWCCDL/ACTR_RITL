@@ -17,13 +17,15 @@
      :ul                      t
      :ult		      t
      :tt                      4
-     :pct                     t
+     ;:pct                     t
      :alpha                   0.2
      :bll                     0.5
      :ol                      t
      ;; Perceptual params
      :auto-attend             t 
      :visual-finst-span       10.0)
+
+
 
 ;(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production retrieval goal visual-location imaginal))
 
