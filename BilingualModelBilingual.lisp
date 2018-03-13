@@ -73,6 +73,8 @@
     (times isa operation task times argument1 x operator * argument2 y type binary)
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
+(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2000))
+
 ;;; ENCODING
 
 (p initiate-encoding 

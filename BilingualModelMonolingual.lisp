@@ -76,7 +76,7 @@
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 ;; Set all operationa to high levels of activation
-(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -20000000 :references 4000))
+(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 10000))
 
 ;;; ENCODING
 
