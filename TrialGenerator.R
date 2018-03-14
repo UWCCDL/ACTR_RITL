@@ -23,9 +23,8 @@ write(exportStimuli,"trials",ncolumns=1)
 
 
 ## MAKE DATA FROM SCRATCH
-# Define simuli (remove decrement and subtract for now)
-unary <- c("THIRD", "INCREMENT", "TRIPLE", "HALF","DOUBLE")
-binary <- c("TIMES","DIVIDE","ADD")
+unary <- c("DOUBLE","TRIPLE","INCREMENT", "DECREMENT","THIRD", "HALF")
+binary <- c("TIMES","DIVIDE","ADD", "SUBTRACT")
 
 #Define functions
 DECREMENT <- function(x) {x-1}

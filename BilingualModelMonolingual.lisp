@@ -71,11 +71,11 @@
     (decrement isa operation task decrement argument1 x operator - argument2 1 type unary))
 
 (add-dm (add isa operation task add argument1 x operator + argument2 y type binary)
-    (subtract isa operation task substract argument1 x operator - argument2 y type binary)
+    (subtract isa operation task subtract argument1 x operator - argument2 y type binary)
     (times isa operation task times argument1 x operator * argument2 y type binary)
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
-;; Set all operationa to high levels of activation
+;; Set all operations to high levels of activation
 (sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2500))
 
 ;;; ENCODING
