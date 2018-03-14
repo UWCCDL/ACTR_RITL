@@ -8,8 +8,7 @@
 (sgp :trace-detail            medium 
      :show-focus              t 
      :esc                     t 
-     :lf                      0.9 
-     :mas                     1.6 
+     :lf                      1 
      :imaginal-activation     1.0 
 
      ;; Productions
@@ -75,7 +74,7 @@
     (times isa operation task times argument1 x operator * argument2 y type binary)
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
-(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2000))
+(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2500))
 
 ;;; ENCODING
 
@@ -298,7 +297,6 @@
   =imaginal>
     isa ritl-task
     x  =ans
-    task1 nil
 
     +goal>
     isa phase
@@ -320,7 +318,6 @@
    
    =imaginal>
    isa          ritl-task
-   task1        nil
    task2        =second
    - x          nil
    y            nil
@@ -347,6 +344,8 @@
    =imaginal>
    isa   ritl-task
    task2 =second
+   - x          nil
+   y            nil
 
    =retrieval>
    isa  operation
@@ -404,7 +403,6 @@
    =imaginal>
    isa ritl-task
    y =ans
-   task2 nil
 
    +goal>
    isa phase
@@ -419,8 +417,6 @@
 
    =imaginal>
    isa          ritl-task
-   task1        nil
-   task2        nil
    task3        =third
    - x          nil
    - y          nil
@@ -484,8 +480,6 @@
 
    =imaginal>
    isa ritl-task
-   task1 nil
-   task2 nil
    - x   nil
    - y   nil
 
@@ -494,9 +488,6 @@
    =imaginal>
    isa ritl-task
    result  =ans
-   x nil
-   y nil
-   task3 nil
 
    +goal>
    isa phase
@@ -519,8 +510,6 @@
 
    =imaginal>
    isa ritl-task
-    x nil
-    y nil
    result =res
 
    ?manual>
@@ -534,7 +523,9 @@
 
    ==>
 
-   -goal>
+   =goal>
+   isa phase
+   step answer
 
    =imaginal>
 
@@ -555,14 +546,15 @@
     
   =imaginal>
   isa         ritl-task
-  task1 nil
-  task2 nil
-  task3 nil
     result      =VAL
     
    ?manual>
     preparation  free
     execution    free
+
+    =goal>
+    isa phase
+    step answer
 
 ==>
   +manual>
@@ -580,14 +572,15 @@
     
   =imaginal>
   isa         ritl-task
-  task1 nil
-  task2 nil
-  task3 nil
   - result      =VAL
     
   ?manual>
     preparation  free
     execution    free
+
+    =goal>
+    isa phase
+    step answer
 
     
  ==>

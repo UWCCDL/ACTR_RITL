@@ -8,8 +8,7 @@
 (sgp :trace-detail            low 
      :show-focus              t 
      :esc                     t 
-     :lf                      0.9 
-     :mas                     1.6 
+     :lf                      1
      :imaginal-activation     1.0 
 
      ;; Productions
@@ -77,7 +76,7 @@
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 ;; Set all operationa to high levels of activation
-(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2000))
+(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2500))
 
 ;;; ENCODING
 
