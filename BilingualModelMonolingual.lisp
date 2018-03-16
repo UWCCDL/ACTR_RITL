@@ -233,7 +233,7 @@
 
     +goal>
     isa phase
-    step execution
+    step execution-x
     task =first
 
    +imaginal>
@@ -255,7 +255,7 @@
 (p retrieve-arithmetic-fact-unary-x
    =goal>
    isa phase
-   step execution
+   step execution-x
    
    =imaginal>
    isa  ritl-task
@@ -531,8 +531,6 @@
 
    =imaginal>
    isa ritl-result
-   - x nil
-   - y nil
    result =res
 
    ?manual>
@@ -546,7 +544,9 @@
 
    ==>
 
-   -goal>
+   =goal>
+   isa phase
+   step answer
 
    =imaginal>
 
@@ -566,13 +566,15 @@
    
    =imaginal>
    isa         ritl-result
-   - x nil
-   - y nil
    result      =VAL
    
    ?manual>
    preparation  free
    execution    free
+
+    =goal>
+    isa phase
+    step answer
 
    ==>
    +manual>
@@ -590,17 +592,15 @@
    
    =imaginal>
    isa         ritl-result
-   - x nil
-   - y nil
    - result      =VAL
    
    ?manual>
    preparation  free
    execution    free
-    ?temporal>
-    state free
-    buffer empty
 
+    =goal>
+    isa phase
+    step answer
    
    ==>
 

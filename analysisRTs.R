@@ -11,3 +11,9 @@ aggregate(session2Mono$ExecutionRT,list(session2Mono$Practiced),mean)
 
 aggregate(session2Bi$EncodingRT,list(session2Bi$Practiced),mean)
 aggregate(session2Bi$ExecutionRT,list(session2Bi$Practiced),mean)
+
+session2Mono$lang <- "mono"
+session2Bi$lang <- "bi"
+merged <- rbind(session2Mono,session2Bi)
+ggplot(merged, aes(lang,EncodingRT,fill=Practiced)) + geom_bar(stat = "summary", fun.y=mean,position = "dodge")
+ggplot(merged, aes(lang,ExecutionRT,fill=Practiced)) + geom_bar(stat = "summary", fun.y=mean,position = "dodge")

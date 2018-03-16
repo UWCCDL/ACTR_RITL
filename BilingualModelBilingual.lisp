@@ -201,6 +201,9 @@
   ?visual>
      state free
 
+  ?imaginal>
+   state free
+   buffer empty
 
   ?manual>
     preparation  free
