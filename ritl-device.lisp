@@ -252,9 +252,9 @@
 	(trial-execution-rt trial)
 	(trial-accuracy trial)))
 
-(defun experiment-stats ()
-  (let* ((trials (experiment-log (current-device)))
-	 (stats (mapcar #'trial-stats trials))) 
+(defun experiment-stats (&optional (trials (experiment-log (current-device))))
+  (let* (
+	 (stats (mapcar #'trial-stats trials)))
     (let ((rules (mapcar #'first stats))
 	  (execs (mapcar #'second stats))
 	  (accs (mapcar #'third stats)))
