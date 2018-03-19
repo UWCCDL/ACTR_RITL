@@ -42,9 +42,9 @@
 (chunk-type (ritl-screen (:include visual-object))
 	    kind nature)
 (chunk-type (ritl-rule (:include visual-object))
-	    task1 task2 task3)
+	    task1 task2 task3 kind)
 (chunk-type (ritl-inputs (:include visual-object))
-	    x y)
+	    x y kind)
 (chunk-type (ritl-probe (:include visual-object))
 	    kind probe)
 
@@ -59,8 +59,10 @@
 
 
 ;;; Declarative memory
-(add-dm (x isa chunk) (y isa chunk) (* isa chunk) (+ isa chunk)
-	(/ isa chunk) (unary isa chunk) (binary isa chunk))
+(add-dm (x isa chunk) (y isa chunk)
+	;(* isa chunk) (+ isa chunk)
+	;(/ isa chunk)
+	(unary isa chunk) (binary isa chunk))
 
 ;;; Operations
 (add-dm (double isa operation task double argument1 x operator * argument2 2 type unary)
