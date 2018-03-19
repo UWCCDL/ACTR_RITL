@@ -80,6 +80,31 @@
 ;; Set all operations to high levels of activation
 (sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2500))
 
+(p look-at-screen
+ ?imaginal>
+    state        free
+    buffer       empty
+
+    ?retrieval>
+    state free
+    buffer empty
+
+   ?visual>
+   state free
+   buffer empty
+
+     ?manual>
+     preparation free
+     processor free
+     execution free
+
+    ?temporal>
+    state free
+    buffer empty
+ ==>
+ +visual-location>
+    kind ritl-location)
+    
 ;;; ENCODING
 
 (p initiate-encoding 
@@ -109,6 +134,8 @@
     ?temporal>
     state free
     buffer empty
+  =visual>
+    value rule  
 ==>
   +visual-location>
      kind ritl-location
