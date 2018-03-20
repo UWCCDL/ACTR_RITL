@@ -78,15 +78,42 @@
 
 ;;; ENCODING
 
+(p look-at-screen
+   ?imaginal>
+   state        free
+   buffer       empty
+
+   ?retrieval>
+   state free
+   buffer empty
+
+   ?visual>
+   state free
+   buffer empty
+
+   ?manual>
+   preparation free
+   processor free
+   execution free
+
+   ?temporal>
+   state free
+   buffer empty
+   ==>
+   +visual-location>
+   kind ritl-location)
+
+;;; ENCODING
+
 (p initiate-encoding 
    "Prepares to encode operations when the instructions are on"
-  ?imaginal>
-    state        free
-    buffer       empty
+   ?imaginal>
+   state        free
+   buffer       empty
 
-    ?retrieval>
-    state free
-    buffer empty
+   ?retrieval>
+   state free
+   buffer empty
 
    ?visual-location>
    state free
@@ -94,71 +121,80 @@
    ?visual>
    state free
 
-     ?manual>
-     preparation free
-     processor free
-     execution free
-  ?goal>
-    state free
-    buffer empty
-==>
-  +visual-location>
-     kind ritl-location
-     :attended nil
-  +goal>
-    isa phase
-    step encoding
-    )
+   ?manual>
+   preparation free
+   processor free
+   execution free
+   ?goal>
+   state free
+   buffer empty
 
+   ?temporal>
+   state free
+   buffer empty
+   =visual>
+   value rule  
+   ==>
+   +visual-location>
+   kind ritl-location
+   :attended nil
+   +goal>
+   isa phase
+   step encoding
+   
+   )
 
 
 (p encode-instructions
-  ?imaginal>
-    state        free
-    buffer       empty
+   "encode instructions and start waiting"
+   ?imaginal>
+   state        free
+   buffer       empty
    
-  =goal>
-    isa phase
-    step encoding
+   =goal>
+   isa phase
+   step encoding
 
-  =visual>
-    isa ritl-rule
-    task1 =first
-    task2 =second
-    task3 =third
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
 
-==>
+   ==>
+   
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
 
-  +imaginal>
-    isa   ritl-task
-    task1 =first
-    task2 =second
-    task3 =third
+   =goal>
+   isa phase
+   step encoding-retrieval
 
-    =goal>
-    isa phase
-    step encoding-retrieval
-
-    =visual>
-
-    )
+   =visual>
+   )
 
 (p clear-imaginal
-   ?imaginal>
+   ?retrieval>
+   state free
    buffer full
 
    =goal>
    isa phase
    step encoding-retrieval
 
+
    ==>
    =goal>
 
-   -imaginal>
+   -retrieval>
+
    )
 
-(p remember-instructions
-   ?imaginal>
+(p retrieve-instructions
+   ?retrieval>
    state        free
    buffer       empty
    
@@ -183,7 +219,6 @@
    =goal>
    isa phase
    step remembered
-
    )
 
 ;;; --------------------------------------------------------------
