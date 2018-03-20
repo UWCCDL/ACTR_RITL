@@ -173,36 +173,37 @@
 
    =goal>
    isa phase
-   step encoding-retrieval
+   step encoding-complete-1
 
    =visual>
    )
 
-(p clear-imaginal
+(p clear-imaginal-1
    ?imaginal>
    state free
    buffer full
 
    =goal>
    isa phase
-   step encoding-retrieval
+   step encoding-complete-1
 
 
    ==>
    =goal>
+   step imaginal-cleared
 
    -imaginal>
 
   )
 
-(p retrieve-instructions
+(p retrieve-instructions-1
    ?imaginal>
    state        free
    buffer       empty
    
    =goal>
    isa phase
-   step encoding-retrieval
+   step imaginal-cleared
 
    =visual>
    isa ritl-rule
@@ -220,8 +221,160 @@
 
    =goal>
    isa phase
-   step remembered
+   step remembered-1
    )
+
+(p clear-buffer-2
+
+   =goal>
+   isa phase
+   step remembered-1
+
+   =retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+
+   ==>
+   =goal>
+   step retrieval-cleared-1
+
+   -retrieval>
+   )
+
+(p retrieve-instructions-2
+   ?imaginal>
+   state        free
+   buffer       empty
+   ?retrieval>
+   state        free
+   buffer       empty
+   
+   =goal>
+   step retrieval-cleared-1
+   
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered-2
+   )
+
+(p clear-buffer-3
+
+   =goal>
+   isa phase
+   step remembered-2
+
+   =retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+
+   ==>
+   =goal>
+   step retrieval-cleared-3
+
+   -retrieval>
+   )
+
+(p retrieve-instructions-3
+   ?imaginal>
+   state        free
+   buffer       empty
+   ?retrieval>
+   state        free
+   buffer       empty
+   
+   =goal>
+   step retrieval-cleared-3
+   
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered-3
+   )
+
+
+(p clear-buffer-4
+
+   =goal>
+   isa phase
+   step remembered-3
+
+   =retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+
+   ==>
+   =goal>
+   step retrieval-cleared-4
+
+   -retrieval>
+   )
+
+(p retrieve-instructions-4
+   ?imaginal>
+   state        free
+   buffer       empty
+   ?retrieval>
+   state        free
+   buffer       empty
+   
+   =goal>
+   step retrieval-cleared-4
+   
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered-4
+   )
+
 
 
 ;;; --------------------------------------------------------------
@@ -251,7 +404,7 @@
 
   =goal>
     isa phase
-    step remembered
+    step remembered-4
 
     ==>
 
