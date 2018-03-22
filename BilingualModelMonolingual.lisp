@@ -9,13 +9,13 @@
      :show-focus              t 
      :esc                     t 
      :lf                      1
-     :imaginal-activation     1.0 
+     :imaginal-activation     1
 
      ;; Productions
      :epl                     t 
      :ul                      t
      :ult		      t
-     :tt                      4
+     :tt                      2
     ; :pct                     t
      :alpha                   0.2
      :bll                     0.5
@@ -441,6 +441,7 @@
    
    =imaginal>
    isa  ritl-task
+   task1 =first
 
    =visual>
    isa  ritl-inputs
@@ -483,7 +484,7 @@
 
    =retrieval>
    isa arithmetic-fact
-   result =res
+   result =ans
 
    ==>
 
@@ -495,7 +496,7 @@
 
    +imaginal>
    isa ritl-result
-   x =res
+   x =ans
 
    +goal>
    isa phase
@@ -540,6 +541,7 @@
 (p retrieve-arithmetic-fact-unary-y
    =imaginal>
    isa ritl-result
+   task =second
    - x nil
    y nil
    
@@ -555,6 +557,7 @@
    type unary
 
    =visual>
+   isa  ritl-inputs
    y =y
 
    ==>
@@ -580,7 +583,7 @@
 
    =retrieval>
    isa arithmetic-fact
-   result =res
+   result =ans
 
    =imaginal>
    isa ritl-result
@@ -596,7 +599,7 @@
 
    =imaginal>
    isa ritl-result
-   y =res
+   y =ans
 
    +goal>
    isa phase
@@ -713,7 +716,7 @@
 
    =imaginal>
    isa ritl-result
-   result =res
+   result =ans
 
    ?manual>
    preparation  free

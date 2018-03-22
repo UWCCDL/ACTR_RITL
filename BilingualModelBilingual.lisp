@@ -15,7 +15,7 @@
      :epl                     t 
      :ul                      t
      :ult		      t
-     :tt                      4
+     :tt                      2
      ;:pct                     t
      :alpha                   0.2
      :bll                     0.5
@@ -144,7 +144,6 @@
    
    )
 
-
 (p encode-instructions
    "encode instructions and start waiting"
    ?imaginal>
@@ -163,7 +162,7 @@
 
    ==>
    
-   +retrieval>
+   +imaginal>
    isa   ritl-task
    task1 =first
    task2 =second
@@ -171,36 +170,37 @@
 
    =goal>
    isa phase
-   step encoding-retrieval
+   step encoding-complete-1
 
    =visual>
    )
 
-(p clear-imaginal
-   ?retrieval>
+(p clear-imaginal-1
+   ?imaginal>
    state free
    buffer full
 
    =goal>
    isa phase
-   step encoding-retrieval
+   step encoding-complete-1
 
 
    ==>
    =goal>
+   step imaginal-cleared
 
-   -retrieval>
+   -imaginal>
 
    )
 
-(p retrieve-instructions
-   ?retrieval>
+(p retrieve-instructions-1
+   ?imaginal>
    state        free
    buffer       empty
    
    =goal>
    isa phase
-   step encoding-retrieval
+   step imaginal-cleared
 
    =visual>
    isa ritl-rule
@@ -218,7 +218,158 @@
 
    =goal>
    isa phase
-   step remembered
+   step remembered-1
+   )
+
+(p clear-buffer-2
+
+   =goal>
+   isa phase
+   step remembered-1
+
+   =retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+
+   ==>
+   =goal>
+   step retrieval-cleared-1
+
+   -retrieval>
+   )
+
+(p retrieve-instructions-2
+   ?imaginal>
+   state        free
+   buffer       empty
+   ?retrieval>
+   state        free
+   buffer       empty
+   
+   =goal>
+   step retrieval-cleared-1
+   
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered-2
+   )
+
+(p clear-buffer-3
+
+   =goal>
+   isa phase
+   step remembered-2
+
+   =retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+
+   ==>
+   =goal>
+   step retrieval-cleared-3
+
+   -retrieval>
+   )
+
+(p retrieve-instructions-3
+   ?imaginal>
+   state        free
+   buffer       empty
+   ?retrieval>
+   state        free
+   buffer       empty
+   
+   =goal>
+   step retrieval-cleared-3
+   
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered-3
+   )
+
+
+(p clear-buffer-4
+
+   =goal>
+   isa phase
+   step remembered-3
+
+   =retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+
+   ==>
+   =goal>
+   step retrieval-cleared-4
+
+   -retrieval>
+   )
+
+(p retrieve-instructions-4
+   ?imaginal>
+   state        free
+   buffer       empty
+   ?retrieval>
+   state        free
+   buffer       empty
+   
+   =goal>
+   step retrieval-cleared-4
+   
+   =visual>
+   isa ritl-rule
+   task1 =first
+   task2 =second
+   task3 =third
+
+   ==>
+
+   +retrieval>
+   isa   ritl-task
+   task1 =first
+   task2 =second
+   task3 =third
+
+   =goal>
+   isa phase
+   step remembered-4
    )
 
 ;;; --------------------------------------------------------------
@@ -248,7 +399,7 @@
 
   =goal>
     isa phase
-    step remembered
+    step remembered-4
 
     ==>
 
@@ -309,18 +460,13 @@
    
    +goal>
    isa phase
-   step update-pad
+   step update-pad-x
    )
 
-(p update-task-buffer-x
-
-   =visual>
-   x =x
-   y =y
-   
+(p update-scratchpad-x
    =goal>
    isa phase
-   step update-pad
+   step update-pad-x
 
    =retrieval>
    isa arithmetic-fact
@@ -329,6 +475,8 @@
    =imaginal>
    isa  ritl-task
    task1 =first
+   task2 =second
+   task3 =third
    
    ==>
       
@@ -339,8 +487,6 @@
     +goal>
     isa phase
     step execution-y
-
-    =visual>
 
   )
 
@@ -389,6 +535,7 @@
    isa  operation
    operator =op
    argument2 =arg2
+   task =second
    type unary
 
    =visual>
@@ -403,8 +550,6 @@
    
    =imaginal>
    
-   =visual>
-   
    +retrieval>
    isa arithmetic-fact
    operation =op
@@ -413,7 +558,7 @@
    
    +goal>
    isa phase
-   step update-pad
+   step update-scratchpad-y
    )
 
 (p update-scratchpad-y
@@ -422,21 +567,15 @@
    - x   nil
    y nil
    
-   =visual>
-   isa  ritl-inputs
-   y  =y
-
    =retrieval>
    isa arithmetic-fact
    result =ans
    
    =goal>
    isa phase
-   step update-pad
+   step update-scratchpad-y
    
    ==>
-   
-   =visual>
    
    =imaginal>
    isa ritl-task
@@ -489,6 +628,7 @@
    isa  operation
    operator =op
    type binary
+   task =third
    
    ==>
    
@@ -502,7 +642,7 @@
    
    +goal>
    isa phase
-   step update-pad
+   step update-scratchpad-binary
 
    )
 
@@ -510,7 +650,7 @@
 (p update-scratchpad-binary
    =goal>
    isa phase
-   step update-pad
+   step update-scratchpad-binary
 
    =retrieval>
    isa arithmetic-fact
@@ -548,7 +688,7 @@
 
    =imaginal>
    isa ritl-task
-   result =res
+   result =ans
 
    ?manual>
    preparation  free
