@@ -9,7 +9,7 @@
      :show-focus              t 
      :esc                     t 
      :lf                      1
-     :imaginal-activation     1
+     :imaginal-activation     0
 
      ;; Productions
      :epl                     t 
