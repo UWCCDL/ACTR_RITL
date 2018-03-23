@@ -23,7 +23,7 @@
      ;; Perceptual params
      :auto-attend             t 
      :visual-finst-span       10.0
-     :rt 0.4
+     :rt 2.1
      )
 
 ;;; Arithmetic facts
@@ -79,7 +79,7 @@
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
 ;; Set all operations to high levels of activation
-(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 2500))
+(sdp-fct `(,(no-output (sdm isa operation)) :creation-time -10000000 :references 100000))
 
 (p look-at-screen
  ?imaginal>
@@ -174,19 +174,19 @@
 
    =goal>
    isa phase
-   step encoding-complete-1
+   step encoding-complete
 
    =visual>
    )
 
-(p clear-imaginal-1
+(p clear-imaginal
    ?imaginal>
    state free
    buffer full
 
    =goal>
    isa phase
-   step encoding-complete-1
+   step encoding-complete
 
 
    ==>
@@ -197,7 +197,7 @@
 
   )
 
-(p retrieve-instructions-1
+(p retrieve-instructions
    ?imaginal>
    state        free
    buffer       empty
@@ -222,161 +222,8 @@
 
    =goal>
    isa phase
-   step remembered-1
+   step remembered
    )
-
-(p clear-buffer-2
-
-   =goal>
-   isa phase
-   step remembered-1
-
-   =retrieval>
-   isa   ritl-task
-   task1 =first
-   task2 =second
-   task3 =third
-
-
-   ==>
-   =goal>
-   step retrieval-cleared-1
-
-   -retrieval>
-   )
-
-(p retrieve-instructions-2
-   ?imaginal>
-   state        free
-   buffer       empty
-   ?retrieval>
-   state        free
-   buffer       empty
-   
-   =goal>
-   step retrieval-cleared-1
-   
-   =visual>
-   isa ritl-rule
-   task1 =first
-   task2 =second
-   task3 =third
-
-   ==>
-
-   +retrieval>
-   isa   ritl-task
-   task1 =first
-   task2 =second
-   task3 =third
-
-   =goal>
-   isa phase
-   step remembered-2
-   )
-
-(p clear-buffer-3
-
-   =goal>
-   isa phase
-   step remembered-2
-
-   =retrieval>
-   isa   ritl-task
-   task1 =first
-   task2 =second
-   task3 =third
-
-
-   ==>
-   =goal>
-   step retrieval-cleared-3
-
-   -retrieval>
-   )
-
-(p retrieve-instructions-3
-   ?imaginal>
-   state        free
-   buffer       empty
-   ?retrieval>
-   state        free
-   buffer       empty
-   
-   =goal>
-   step retrieval-cleared-3
-   
-   =visual>
-   isa ritl-rule
-   task1 =first
-   task2 =second
-   task3 =third
-
-   ==>
-
-   +retrieval>
-   isa   ritl-task
-   task1 =first
-   task2 =second
-   task3 =third
-
-   =goal>
-   isa phase
-   step remembered-3
-   )
-
-
-(p clear-buffer-4
-
-   =goal>
-   isa phase
-   step remembered-3
-
-   =retrieval>
-   isa   ritl-task
-   task1 =first
-   task2 =second
-   task3 =third
-
-
-   ==>
-   =goal>
-   step retrieval-cleared-4
-
-   -retrieval>
-   )
-
-(p retrieve-instructions-4
-   ?imaginal>
-   state        free
-   buffer       empty
-   ?retrieval>
-   state        free
-   buffer       empty
-   
-   =goal>
-   step retrieval-cleared-4
-   
-   =visual>
-   isa ritl-rule
-   task1 =first
-   task2 =second
-   task3 =third
-
-   ==>
-
-   +retrieval>
-   isa   ritl-task
-   task1 =first
-   task2 =second
-   task3 =third
-
-   =goal>
-   isa phase
-   step remembered-4
-   )
-
-
 
 ;;; --------------------------------------------------------------
 ;;; Press a key when done
@@ -405,7 +252,7 @@
 
   =goal>
     isa phase
-    step remembered-4
+    step remembered
 
     ==>
 
