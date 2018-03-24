@@ -9,7 +9,8 @@
      :show-focus              t 
      :esc                     t 
      :lf                      1
-     :imaginal-activation     0
+     ;:imaginal-activation     20
+     ;:mas                     2
 
      ;; Productions
      :epl                     t 
@@ -32,7 +33,7 @@
 
 ;;; RITL chunks
 (chunk-type ritl-task kind task1 task2 task3)
-(chunk-type ritl-result kind x y result task)
+(chunk-type ritl-result kind x y result task task1 task2 task3)
 (chunk-type phase step task)
 
 ;;; Arithmetic chunks
@@ -168,6 +169,7 @@
     
   +imaginal>
     isa   ritl-task
+    kind  ritl-task
     task1 =first
     task2 =second
     task3 =third
@@ -219,6 +221,7 @@
 
    +retrieval>
    isa   ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
@@ -244,6 +247,7 @@
 
    =retrieval>
    isa   ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
@@ -278,6 +282,7 @@
 
    =retrieval>
    isa   ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
@@ -307,6 +312,7 @@
 
    =retrieval>
    isa   ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
@@ -411,6 +417,7 @@
 
    +retrieval>
    isa ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
@@ -518,6 +525,7 @@
 
    +retrieval>
    isa ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
@@ -546,6 +554,7 @@
 
    =retrieval>
    isa ritl-task
+   kind ritl-task
    task1 =first
    task2 =second
    task3 =third
