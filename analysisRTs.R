@@ -1,4 +1,4 @@
-modelMonolingual <- read.csv("model-temporal.txt", header=T, )
+modelMonolingual <- read.csv("~/hopeneverdies8.txt", header=T, stringsAsFactors = T)
 session2Mono <- modelMonolingual[21:60,]
 session2Mono$Practiced <- session2Mono$Rule == "(INCREMENT DOUBLE DIVIDE)" | session2Mono$Rule == "(TRIPLE INCREMENT ADD)"
 
@@ -6,6 +6,8 @@ session2Mono$Practiced <- session2Mono$Rule == "(INCREMENT DOUBLE DIVIDE)" | ses
 #session2Bi <- modelBilingual[21:60,]
 #session2Bi$Practiced <- session2Bi$Rule == "(INCREMENT DOUBLE DIVIDE)" | session2Bi$Rule == "(TRIPLE INCREMENT ADD)"
 
+session2Mono$EncodingRT <- as.numeric(as.character(session2Mono$EncodingRT))
+session2Mono$ExecutionRT <- as.numeric(as.character(session2Mono$ExecutionRT))
 aggregate(session2Mono$EncodingRT,list(session2Mono$Practiced),mean)
 aggregate(session2Mono$ExecutionRT,list(session2Mono$Practiced),mean)
 
