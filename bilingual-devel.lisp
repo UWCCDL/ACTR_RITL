@@ -12,7 +12,7 @@
      :nu                      0.1
      :er                      t
      :imaginal-delay          0.17
-     :ans                     0.02
+     :ans                     0.01
      ;;:imaginal-activation     2
      ;;:mas                     1
      :time-noise              0.02
