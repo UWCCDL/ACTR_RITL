@@ -3,7 +3,7 @@
 #+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
 				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
 
-(define-model monolingual-devel
+(define-model bilingual-devel
 
 (sgp :trace-detail            low 
      :show-focus              t 
@@ -436,8 +436,8 @@
 (p calculate-y
 
    ?retrieval>
-   state free
    buffer empty
+   state free
 
    =goal>
    isa phase
@@ -446,7 +446,7 @@
    =imaginal>
    isa          ritl-task
    task2        =second
-   - x          nil
+   ;;- x          nil
    y            nil
 
    =visual>
@@ -471,7 +471,7 @@
    =imaginal>
    isa   ritl-task
    task2 =second
-   - x          nil
+   ;;- x          nil
    y            nil
 
    =retrieval>
@@ -507,7 +507,7 @@
 (p update-scratchpad-y
    =imaginal>
    isa ritl-task
-   - x   nil
+   ;;- x   nil
    y nil
    
    =retrieval>
@@ -538,8 +538,8 @@
    =imaginal>
    isa          ritl-task
    task3        =third
-   - x          nil
-   - y          nil
+   ;;- x          nil
+   ;;- y          nil
 
    =goal>
    isa phase
@@ -601,8 +601,8 @@
 
    =imaginal>
    isa ritl-task
-   - x   nil
-   - y   nil
+   ;;- x   nil
+   ;;- y   nil
 
    ==>
    
