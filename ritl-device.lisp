@@ -545,3 +545,29 @@
   (install-device device)
   ;(init device)
   (proc-display))
+
+(defun quick-stats ()
+  (let* ((trials (reverse (experiment-log (current-device))))
+	 (practice (subseq trials 0 20))
+	 (exp (subseq trials 20))
+	 (practiced-instructions (remove-duplicates 
+				  (mapcar #'(lambda (x)
+					      (ritl-rule (trial-stimulus x)))
+					  practice)
+				  :test 'equalp))
+	 (exp-practiced (remove-if-not
+			 #'(lambda (x)
+			     (member
+			      (ritl-rule (trial-stimulus x))
+			      practiced-instructions
+			      :test 'equalp))
+			 exp))
+	 (exp-novel (remove-if
+			 #'(lambda (x)
+			     (member
+			      (ritl-rule (trial-stimulus x))
+			      practiced-instructions
+			      :test 'equalp))
+			 exp)))
+    (list (cons 'practiced (experiment-stats exp-practiced))
+	  (cons 'novel (experiment-stats exp-novel)))))
