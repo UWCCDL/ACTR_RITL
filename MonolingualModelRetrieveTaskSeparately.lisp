@@ -342,10 +342,7 @@
 
     ==>
 
-   +retrieval>
-    isa operation
-    task =first
-    type unary
+    =retrieval>
 
    +goal>
     isa phase
@@ -365,7 +362,39 @@
 
 ;;; EXECUTION
 
-;;; Calculate-x
+
+(p calculate-x
+   =goal>
+   isa phase
+   step execution-x
+   
+   =imaginal>
+   isa  ritl-result
+   x nil
+
+   =visual>
+   isa  ritl-inputs
+   x  =x
+
+   =retrieval>
+   isa  ritl-task
+   task1 =first
+
+   ==>
+
+   =goal>
+   
+   =visual>
+
+   =imaginal>
+   isa ritl-result
+   task =first
+
+   +retrieval>
+   isa operation
+   task =first
+   type unary
+   )
 
 
 (p retrieve-arithmetic-fact-unary-x
