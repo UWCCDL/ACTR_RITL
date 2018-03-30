@@ -21,7 +21,7 @@
      :ul                      t
      :ult		      t
      :tt                      2
-     ;;:pct                     t
+     :pct                     t
      :alpha                   0.1
      :bll                     0.5
      :lf                      1
