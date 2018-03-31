@@ -9,8 +9,8 @@
      :show-focus              t 
      :esc                     t 
      :lf                      1 
-     :imaginal-activation     1.0 
-
+     :imaginal-activation     1.0
+     
      ;; Productions
      :epl                     t 
      :ul                      t
@@ -347,8 +347,7 @@
    =imaginal>
    isa          ritl-task
    task2        =second
-   - x          nil
-   y            nil
+   ;y            nil ;Keep or remove?
 
    =visual>
    isa  ritl-inputs
@@ -372,8 +371,7 @@
    =imaginal>
    isa   ritl-task
    task2 =second
-   - x          nil
-   y            nil
+  ; y            nil ;keep or leave
 
    =retrieval>
    isa  operation
@@ -408,8 +406,7 @@
 (p update-scratchpad-y
    =imaginal>
    isa ritl-task
-   - x   nil
-   y nil
+   ;y nil ;keep or leave?
    
    =retrieval>
    isa arithmetic-fact
@@ -439,8 +436,6 @@
    =imaginal>
    isa          ritl-task
    task3        =third
-   - x          nil
-   - y          nil
 
    =goal>
    isa phase
@@ -502,9 +497,7 @@
 
    =imaginal>
    isa ritl-task
-   - x   nil
-   - y   nil
-
+   
    ==>
    
    =imaginal>
