@@ -22,7 +22,7 @@
      :ult		      t
      :tt                      2
      :pct                     t
-     :alpha                   0.1
+     :alpha                   0.2
      :bll                     0.5
      :lf                      1
      ;; Perceptual params
@@ -560,7 +560,7 @@
 
    ==>
    
-   =imaginal>
+   *imaginal>
    isa ritl-task
    result  =ans
 
