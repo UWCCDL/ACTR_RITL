@@ -398,34 +398,22 @@
    arg1 =x
    arg2 =arg2
    
- +goal>
-   isa phase
-   step update-pad-x
+ =goal>
 )
 
 (p update-scratchpad-x
+   =goal>
+   isa phase
+   step execution-x
+   
    =imaginal>
    isa ritl-result
-   task1 =first
-   task2 =second
-   task3 =third
-
-   =goal>
-     isa phase
-     step update-pad-x
 
    =retrieval>
      isa arithmetic-fact
      result =ans
 
    ==>
-
-   ;;+retrieval>
-   ;;  isa ritl-task
-   ;;  kind ritl-task
-   ;;  task1 =first
-   ;;  task2 =second
-   ;;  task3 =third
 
    *imaginal>
      isa ritl-result
@@ -476,7 +464,6 @@
    
    =imaginal>
    isa  ritl-result
-   ;;- x nil
    y nil
 
    =visual>
@@ -508,7 +495,6 @@
    =imaginal>
    isa ritl-result
    task2 =second
-   ;;- x nil
    y nil
    
    =goal>
@@ -553,7 +539,6 @@
 
    =imaginal>
    isa ritl-result
-   ;;- x nil
    y nil
    task2 =second
    task1 =first
@@ -561,20 +546,13 @@
 
    ==>
 
-;;   +retrieval>
-;;   isa ritl-task
-;;   kind ritl-task
-;;   task1 =first
-;;   task2 =second
-;;   task3 =third
-
    *imaginal>
      isa ritl-result
      y =ans
 
    =goal>
      isa phase
-     step retrieve-task-bin
+     step retrieve-task-binary
    
    )
 
@@ -590,7 +568,7 @@
    
    =goal>
      isa phase
-     step retrieve-task-bin
+     step retrieve-task-binary
 
    ?retrieval>
      state free    
@@ -621,18 +599,14 @@
 
    =imaginal>
    isa ritl-result
-   ;;- x nil
-   ;;- y nil
    result nil
 
    ?imaginal>
-     state free
+     state free ;; remove check?
    
    =retrieval>
    isa ritl-task
    kind ritl-task
-   ;;task1 =first
-   ;;task2 =second
    task3 =third
 
    ==>
@@ -696,10 +670,7 @@
      state free
    =imaginal>
    isa ritl-result
-   ;;- x nil
-   ;;- y nil
    result nil
-   task =third
 
    ==>
 
