@@ -3,7 +3,7 @@
 #+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
 				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
 
-(define-model bilingual-devel
+(define-model monolingual-devel
 
 (sgp :trace-detail            low 
      :show-focus              t 
@@ -12,9 +12,9 @@
      :nu                      0.1
      :er                      t
      :imaginal-delay          0.17
-     :ans                     0.01
-     ;;:imaginal-activation     2
-     ;;:mas                     1
+     :ans                     0.02
+     ;:imaginal-activation     10
+     ;:mas                     2
      :time-noise              0.02
      ;; Productions
      :epl                     t
@@ -88,9 +88,6 @@
 ;; Set all operations to high levels of activation
 (sdp-fct `(,(no-output (sdm type unary)) :creation-time -10000000 :references 2500))
 (sdp-fct `(,(no-output (sdm type binary)) :creation-time -10000000 :references 2500))
-
-;;; ENCODING
-
 
 (p look-at-screen
  ?imaginal>
@@ -268,7 +265,7 @@
 
    =temporal>
      isa time
-   <= ticks 6
+   <= ticks 7
    
    ==>
 
@@ -303,7 +300,7 @@
 
    =temporal>
      isa time
-   >= ticks 6
+   >= ticks 7
    ==>
 
    =visual>
@@ -368,183 +365,326 @@
 
 ;;; EXECUTION
 
-;;; Calculate x
+;;; Calculate-x
+
 
 (p retrieve-arithmetic-fact-unary-x
    =goal>
-   isa phase
-   step execution-x
+     isa phase
+     step execution-x
    
    =imaginal>
-   isa   ritl-task
-   task1 =first
+     isa  ritl-result
+     task1 =first
 
    =visual>
-   isa  ritl-inputs
-   x  =x
+     isa  ritl-inputs
+     x  =x
 
    =retrieval>
-   isa  operation
-   operator =op
-   argument2 =arg2
-   type unary
-
+     isa  operation
+     operator =op
+     argument2 =arg2
+     type unary
 ==>
   
  =visual>
 
-  =imaginal>
+ =imaginal>
    
-   +retrieval>
+ +retrieval>
    isa arithmetic-fact
    operation =op
    arg1 =x
    arg2 =arg2
    
-   +goal>
+ +goal>
    isa phase
    step update-pad-x
-   )
+)
 
-(p update-scratchpad-x-start-y
+(p update-scratchpad-x
+   =imaginal>
+   isa ritl-result
+   task1 =first
+   task2 =second
+   task3 =third
+
    =goal>
-   isa phase
-   step update-pad-x
+     isa phase
+     step update-pad-x
 
    =retrieval>
-   isa arithmetic-fact
-   result =ans
+     isa arithmetic-fact
+     result =ans
 
+   ==>
+
+   ;;+retrieval>
+   ;;  isa ritl-task
+   ;;  kind ritl-task
+   ;;  task1 =first
+   ;;  task2 =second
+   ;;  task3 =third
+
+   *imaginal>
+     isa ritl-result
+     x =ans
+
+   =goal>
+     isa phase
+     step retrieve-task-x
+     )
+
+(p retrieve-task-y
    =imaginal>
-   isa  ritl-task
+   isa ritl-result
+   task1 =first
    task2 =second
+   task3 =third
+
+   ;;?imaginal>
+   ;;  state free
 
    ?retrieval>
-   state free
-   
-   ==>
-      
-  *imaginal>
-    isa ritl-task
-    x  =ans
+     state free
+   =goal>
+   isa phase
+   step retrieve-task-x
 
-    +goal>
-    isa phase
-    step execution-y
+   ==>
+
+   =imaginal>
 
    +retrieval>
-   isa  operation
-   task =second
-   type unary
-   
-
-  )
-
-(p retrieve-arithmetic-fact-unary-y
-   =imaginal>
-   isa   ritl-task
+   isa ritl-task
+   kind ritl-task
+   task1 =first
    task2 =second
-   ;;- x          nil
-   y            nil
+   task3 =third
 
-   =retrieval>
-   isa  operation
-   operator =op
-   argument2 =arg2
-   task =second
-   type unary
+
+   =goal>
+   isa phase
+   step execution-y
+   )
+
+(p calculate-y
+   =goal>
+   isa phase
+   step execution-y
+   
+   =imaginal>
+   isa  ritl-result
+   ;;- x nil
+   y nil
 
    =visual>
    isa  ritl-inputs
    y  =y
 
-   =goal>
-   isa  phase
-   step execution-y
+   =retrieval>
+   isa  ritl-task
+   task2 =second
 
    ==>
+
+   =goal>
    
+   =visual>
+
+   *imaginal>
+   isa ritl-result
+   task =second
+
+   +retrieval>
+   isa operation
+   task =second
+   type unary
+   
+   )
+
+(p retrieve-arithmetic-fact-unary-y
    =imaginal>
+   isa ritl-result
+   task2 =second
+   ;;- x nil
+   y nil
    
+   =goal>
+   isa phase
+   step execution-y
+
+   =retrieval>
+   isa operation
+   operator =op
+   argument2 =arg2
+   task =second
+   type unary
+
+   =visual>
+   isa  ritl-inputs
+   y =y
+
+   ==>
+
    +retrieval>
    isa arithmetic-fact
    operation =op
    arg1 =y
    arg2 =arg2
-   
+
+   =imaginal>
+
    +goal>
    isa phase
    step update-scratchpad-y
    )
 
-(p update-scratchpad-y-start-binary
-   ?retrieval>
-   state free
+(p update-scratchpad-y
 
-   =imaginal>
-   isa ritl-task
-   task3 =third
-   ;;- x   nil
-   y nil
-   
-   =retrieval>
-   isa arithmetic-fact
-   result =ans
-   
    =goal>
    isa phase
    step update-scratchpad-y
-   
-   ==>
-   
-   *imaginal>
-   isa ritl-task
-   y =ans
 
-   +goal>
-   isa phase
-   step execution-binary
+   =retrieval>
+   isa arithmetic-fact
+   result =ans
+
+   =imaginal>
+   isa ritl-result
+   ;;- x nil
+   y nil
+   task2 =second
+   task1 =first
+   task3 =third
+
+   ==>
+
+;;   +retrieval>
+;;   isa ritl-task
+;;   kind ritl-task
+;;   task1 =first
+;;   task2 =second
+;;   task3 =third
+
+   *imaginal>
+     isa ritl-result
+     y =ans
+
+   =goal>
+     isa phase
+     step retrieve-task-bin
+   
+   )
+
+(p retrieve-task-binary
+   =imaginal>
+     isa ritl-result
+     task1 =first
+     task2 =second
+     task3 =third
+
+   ;;?imaginal>
+   ;;  state free
+   
+   =goal>
+     isa phase
+     step retrieve-task-bin
+
+   ?retrieval>
+     state free    
+     
+   ==>
+
+   =imaginal>
 
    +retrieval>
-   isa operation
-   task =third
-   type binary
+     isa ritl-task
+     kind ritl-task
+     task1 =first
+     task2 =second
+     task3 =third
 
+
+   =goal>
+   isa phase
+   step execution-binary
    )
 
 
-(p retrieve-arithmetic-fact-binary
-   
+(p calculate-binary
+
+   =goal>
+   isa phase
+   step execution-binary
+
    =imaginal>
+   isa ritl-result
+   ;;- x nil
+   ;;- y nil
+   result nil
+   
+   
+   ;;?imaginal>
+   ;;  state free
+   
+   =retrieval>
    isa ritl-task
-   x =x
-   y =y
+   kind ritl-task
+   ;;task1 =first
+   ;;task2 =second
    task3 =third
 
-   =retrieval>
-   isa  operation
-   operator =op
-   type binary
-   task =third
-   
    ==>
-   
+
+   *imaginal>
+   isa ritl-result
+   task =third
+
+   =goal>
+
+   +retrieval>
+     isa operation
+     task =third
+     type binary
+   )
+
+(p retrieve-arithmetic-fact-binary
    =imaginal>
+   isa ritl-result
+   x =x
+   y =y
+   result nil
    
+   =goal>
+   isa phase
+   step execution-binary
+
+   =retrieval>
+   isa operation
+   operator =op
+   argument2 =arg2
+   task =third
+   type binary
+
+   ==>
+
    +retrieval>
    isa arithmetic-fact
    operation =op
    arg1 =x
    arg2 =y
-   
+
+   =imaginal>
+
    +goal>
    isa phase
    step update-scratchpad-binary
-
    )
 
-
 (p update-scratchpad-binary
+
    =goal>
    isa phase
    step update-scratchpad-binary
@@ -553,21 +693,25 @@
    isa arithmetic-fact
    result =ans
 
+   ?imaginal>
+     state free
    =imaginal>
-   isa ritl-task
-   ;;- x   nil
-   ;;- y   nil
+   isa ritl-result
+   ;;- x nil
+   ;;- y nil
+   result nil
+   task =third
 
    ==>
-   
+
    *imaginal>
-   isa ritl-task
+   isa ritl-result
    result  =ans
 
    +goal>
    isa phase
    step done
-   
+ 
    )
 
 ;;; --------------------------------------------------------------
@@ -579,12 +723,12 @@
    ?visual>
    state free
 
-;;   ?imaginal>
-;;   buffer full
-;;   state free
+   ;;?imaginal>
+   ;;buffer full
+   ;;state free
 
    =imaginal>
-   isa ritl-task
+   isa ritl-result
    result =ans
 
    ?manual>
@@ -610,63 +754,60 @@
    )
 
 
-
 ;;; RESPONSE
 
 
 (p answer-yes
-  =visual>
-    isa          ritl-probe
-    probe       =VAL
-    
-  =imaginal>
-  isa         ritl-task
-    result      =VAL
-    
+   =visual>
+   isa          ritl-probe
+   probe       =VAL
+   
+   =imaginal>
+   isa         ritl-result
+   result      =VAL
+   
    ?manual>
-    preparation  free
-    execution    free
+   preparation  free
+   execution    free
 
     =goal>
     isa phase
     step answer
 
-==>
-  +manual>
-    isa          press-key
-    key          "2"
+   ==>
+   +manual>
+   isa          press-key
+   key          "2"
 
-    -goal>
-    -imaginal>
- )
+   -goal>
+   -imaginal>
+   )
 
 (p answer-no
-  =visual>
-    isa         ritl-probe
-    probe       =VAL
-    
-  =imaginal>
-  isa         ritl-task
-  - result      =VAL
-    
-  ?manual>
-    preparation  free
-    execution    free
+   =visual>
+   isa         ritl-probe
+   probe       =VAL
+   
+   =imaginal>
+   isa         ritl-result
+   - result      =VAL
+   
+   ?manual>
+   preparation  free
+   execution    free
 
     =goal>
     isa phase
     step answer
+   
+   ==>
 
-    
- ==>
+   +manual>
+   isa          press-key
+   key          "3"
 
-  +manual>
-    isa          press-key
-    key          "3"
+   -goal>
+   -imaginal>
+   )
 
-    -goal>
-    -imaginal>
 )
-
-)
-

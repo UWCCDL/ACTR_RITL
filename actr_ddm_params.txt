@@ -1,0 +1,7 @@
+# Definition of the parameter space for the
+# ACT-R/DDM comparison
+
+:imaginal-activation 0 5 0.5
+:visual-activation 0 5 0.5
+:blc 1 5 0.5
+:ans 0.1 0.5 0.1
