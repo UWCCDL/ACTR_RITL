@@ -2,6 +2,8 @@
 ;;; SIMULATIONS CODE
 ;;; ==================================================================
 
+
+
 ;;; Params hould be given in the form:
 ;;;
 ;;;   ((:PARAM_1 VAL) (:PARAM_2 VAL) ... (:PARAM_N VAL))
@@ -22,12 +24,12 @@
 				      (string-downcase
 				       (format nil "~A" x)))
 				  (mapcar #'first params))
-			  (list "stim" "response" "rt"))))
+			  *col-names*)))
     (format t "Beginning simulations in hyperpoint ~{~,2f~^, ~}~%" (mapcar #'second params))
     (dotimes (i n (append (list colnames) (reverse results)))
-      (let ((p (make-instance '2afc-task)))
+      (let ((p (make-instance 'ritl-task)))
 	;;(suppress-warnings (reload))
-	(2afc-reload p)
+	(suppress-warnings (ritl-reload p))
 	(sgp :v nil
 	     :pct nil
 	     :style-warnings nil
@@ -40,7 +42,7 @@
 
 	;; Do the simulations
 
-	(run 1000000)
+	(run 10000000)
 
 	;; Create a list of trial-by-trial performance
 	;; (with the corresponding parameter values)

@@ -407,6 +407,9 @@
 	(trial-probe-rt trial)
 	(trial-accuracy trial)))
 
+(defun extract-results (device)
+  (mapcar #'summarize-trial (reverse (experiment-log device))))
+
 (defparameter *col-names* '("Rule" "Inputs" "Probe" "ProbeCorrect" "EncodingRT" "ExecutionRT" "ProbeRT" "Accuracy"))
 
 (defun write-csv (table filename)
