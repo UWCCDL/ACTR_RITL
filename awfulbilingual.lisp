@@ -3,7 +3,7 @@
 #+(or :clisp :sbcl :openmcl) (setf (logical-pathname-translations "INST")
 				   `(("**;*.*" ,(namestring (merge-pathnames "**/*.*" *load-truename*)))))
 
-(define-model monolingual-devel
+(define-model bilingual-devel
 
 (sgp :trace-detail            low 
      :show-focus              t 
@@ -398,75 +398,41 @@
    arg1 =x
    arg2 =arg2
    
- +goal>
-   isa phase
-   step update-pad-x
+ =goal>
 )
 
-(p update-scratchpad-x
-   =imaginal>
-   isa ritl-result
-   task1 =first
-   task2 =second
-   task3 =third
-
-   =goal>
-     isa phase
-     step update-pad-x
-
-   =retrieval>
-     isa arithmetic-fact
-     result =ans
-
-   ==>
-
-   ;;+retrieval>
-   ;;  isa ritl-task
-   ;;  kind ritl-task
-   ;;  task1 =first
-   ;;  task2 =second
-   ;;  task3 =third
-
-   *imaginal>
-     isa ritl-result
-     x =ans
-
-   =goal>
-     isa phase
-     step retrieve-task-x
-     )
-
-(p retrieve-task-y
-   =imaginal>
-   isa ritl-result
-   task1 =first
-   task2 =second
-   task3 =third
-
-   ;;?imaginal>
-   ;;  state free
-
-   ?retrieval>
-     state free
+(p update-scratchpad-x-start-y
    =goal>
    isa phase
-   step retrieve-task-x
+   step execution-x
 
-   ==>
+   =retrieval>
+   isa arithmetic-fact
+   result =ans
 
    =imaginal>
-
-   +retrieval>
-   isa ritl-task
-   kind ritl-task
-   task1 =first
+   isa  ritl-task
    task2 =second
-   task3 =third
 
+   ?retrieval>
+   state free
+   
+   ==>
+   
+   *imaginal>
+   isa ritl-task
+   x  =ans
 
    =goal>
    isa phase
    step execution-y
+
+   +retrieval>
+   isa  operation
+   task =second
+   type unary
+   
+
    )
 
 (p calculate-y
@@ -476,7 +442,6 @@
    
    =imaginal>
    isa  ritl-result
-   ;;- x nil
    y nil
 
    =visual>
@@ -508,7 +473,6 @@
    =imaginal>
    isa ritl-result
    task2 =second
-   ;;- x nil
    y nil
    
    =goal>
@@ -541,75 +505,38 @@
    step update-scratchpad-y
    )
 
-(p update-scratchpad-y
+(p update-scratchpad-y-start-binary
+   ?retrieval>
+   state free
 
-   =goal>
-   isa phase
-   step update-scratchpad-y
-
+   =imaginal>
+   isa ritl-task
+   task3 =third
+   y nil
+   
    =retrieval>
    isa arithmetic-fact
    result =ans
-
-   =imaginal>
-   isa ritl-result
-   ;;- x nil
-   y nil
-   task2 =second
-   task1 =first
-   task3 =third
-
-   ==>
-
-;;   +retrieval>
-;;   isa ritl-task
-;;   kind ritl-task
-;;   task1 =first
-;;   task2 =second
-;;   task3 =third
-
-   *imaginal>
-     isa ritl-result
-     y =ans
-
-   =goal>
-     isa phase
-     step retrieve-task-bin
    
-   )
-
-(p retrieve-task-binary
-   =imaginal>
-     isa ritl-result
-     task1 =first
-     task2 =second
-     task3 =third
-
-   ;;?imaginal>
-   ;;  state free
-   
-   =goal>
-     isa phase
-     step retrieve-task-bin
-
-   ?retrieval>
-     state free    
-     
-   ==>
-
-   =imaginal>
-
-   +retrieval>
-     isa ritl-task
-     kind ritl-task
-     task1 =first
-     task2 =second
-     task3 =third
-
-
    =goal>
    isa phase
+   step update-scratchpad-y
+   
+   ==>
+   
+   *imaginal>
+   isa ritl-task
+   y =ans
+
+   +goal>
+   isa phase
    step execution-binary
+
+   +retrieval>
+   isa operation
+   task =third
+   type binary
+
    )
 
 
@@ -621,19 +548,11 @@
 
    =imaginal>
    isa ritl-result
-   ;;- x nil
-   ;;- y nil
    result nil
-   
-   
-   ;;?imaginal>
-   ;;  state free
    
    =retrieval>
    isa ritl-task
    kind ritl-task
-   ;;task1 =first
-   ;;task2 =second
    task3 =third
 
    ==>
@@ -697,10 +616,7 @@
      state free
    =imaginal>
    isa ritl-result
-   ;;- x nil
-   ;;- y nil
    result nil
-   task =third
 
    ==>
 
@@ -722,10 +638,6 @@
 
    ?visual>
    state free
-
-   ;;?imaginal>
-   ;;buffer full
-   ;;state free
 
    =imaginal>
    isa ritl-result
