@@ -85,6 +85,21 @@
     (times isa operation task times argument1 x operator * argument2 y type binary)
     (divide isa operation task divide argument1 x operator / argument2 y type binary))
 
+;;; Avoids warnings
+
+(add-dm (encoding isa chunk)
+	(encoding-complete-1 isa chunk)
+	(imaginal-cleared isa chunk)
+	(remembered-1 isa chunk)
+	(ritl-task isa chunk)
+	(moveon isa chunk)
+	(execution-x isa chunk)
+	(execution-y isa chunk)
+	(update-scratchpad-y isa chunk)
+	(execution-binary isa chunk)
+	(update-scratchpad-binary isa chunk)
+	(answer isa chunk))
+
 ;; Set all operations to high levels of activation
 (sdp-fct `(,(no-output (sdm type unary)) :creation-time -10000000 :references 2500))
 (sdp-fct `(,(no-output (sdm type binary)) :creation-time -10000000 :references 2500))

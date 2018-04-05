@@ -23,7 +23,7 @@ import operator
 LISP_INTRO = """
 (load "/projects/actr/actr7/load-act-r.lisp")
 (load "ritl-device.lisp")
-(load "awfulbilingual.lisp")
+(load "awfulmonolingual.lisp")
 (load "ritl-simulations.lisp")
 """
 LISP_SIMS = """
