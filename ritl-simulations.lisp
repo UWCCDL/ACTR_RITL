@@ -19,7 +19,7 @@
 (defun simulate (n &key (params nil) (start 0) (filename nil))
   "A generic function to run the model N times. Returns a table of performance measures with the params"
   (let ((results nil)
-	(colnames (append (list "idx")
+	(colnames (append (list "idx" "model_name")
 			  (mapcar #'(lambda (x)
 				      (string-downcase
 				       (format nil "~A" x)))
