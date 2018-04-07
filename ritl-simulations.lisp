@@ -49,6 +49,7 @@
 	
 	(let* ((formatted (extract-results p))
 	       (information (cons (+ start i)
+				  (act-r-model-name)
 				  (mapcar #'second params))))
 	  (dolist (trial formatted)
 	    (push (append information trial)
@@ -73,3 +74,7 @@
     (dolist (row table)
       (format out "~{~a~^,~}~%" row))
     (finish-output out)))
+
+(defun act-r-model-name ()
+  "Returns the model's name as a string"
+  (format nil "~A" (current-model)))
