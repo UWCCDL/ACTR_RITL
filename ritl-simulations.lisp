@@ -48,9 +48,9 @@
 	;; (with the corresponding parameter values)
 	
 	(let* ((formatted (extract-results p))
-	       (information (cons (+ start i)
-				  (act-r-model-name)
-				  (mapcar #'second params))))
+	       (information (append (list (+ start i)
+					  (act-r-model-name))
+				    (mapcar #'second params))))
 	  (dolist (trial formatted)
 	    (push (append information trial)
 		  results)))))

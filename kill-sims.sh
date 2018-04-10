@@ -7,6 +7,6 @@
 # ====================================================================
 
 for process in `ps -A | grep sbcl | cut -f1 -d' '`; do
-    kill $process
+    kill -9 $process
 done
 

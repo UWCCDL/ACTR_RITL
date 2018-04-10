@@ -22,9 +22,9 @@ import operator
 
 LISP_INTRO = """
 (load "/projects/actr/actr7/load-act-r.lisp")
-(load "ritl-device.lisp")
-(load "awfulmonolingual.lisp")
-(load "ritl-simulations.lisp")
+(load "/projects/actr/models/ACTR_RITL/ritl-device.lisp")
+(load "/projects/actr/models/ACTR_RITL/awfulmonolingual.lisp")
+(load "/projects/actr/models/ACTR_RITL/ritl-simulations.lisp")
 """
 LISP_SIMS = """
 (simulate %d :params '%s :start %d :filename "%s")
