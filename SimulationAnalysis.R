@@ -1,4 +1,5 @@
 library(data.table)
+library(ggplot2)
 
 ## Read separate files (disabled)
 fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
@@ -40,21 +41,17 @@ biExecution <- aggregate(DTbi$ExecutionRT,list(DTbi$practiced, DTbi$alpha, DTbi$
 colnames(biExecution) <- vars
 
 # Separate Novel and practiced trials
-biNovelEnc <- biEncoding[biEncoding$practiced == F,]
-summary(biNovelEnc$RT)
-biPracticedEnc <- biEncoding[biEncoding$practiced == T,]
-summary(biPracticedEnc$RT)
+summary(biEncoding[biEncoding$practiced == F,]$RT)
+summary(biEncoding[biEncoding$practiced == T,]$RT)
 
 # Separate Novel and practiced trials execution
-biNovelEx <- biExecution[biExecution$practiced == F,]
-summary(biNovelEx$RT)
-biPracticedEx <- biExecution[biExecution$practiced == T,]
-summary(biPracticedEx$RT)
+summary(biExecution[biExecution$practiced == F,]$RT)
+summary(biExecution[biExecution$practiced == T,]$RT)
 
-deltaBiEncoding <- (biNovelEnc$RT - biPracticedEnc$RT)
+deltaBiEncoding <- (biEncoding[biEncoding$practiced == F,]$RT - biEncoding[biEncoding$practiced == T,]$RT)
 summary(deltaBiEncoding)
 hist(deltaBiEncoding)
-deltaBiExecution <- (biNovelEx$RT - biPracticedEx$RT)
+deltaBiExecution <- (biExecution[biExecution$practiced == F,]$RT - biExecution[biExecution$practiced == T,]$RT)
 summary(deltaBiExecution)
 hist(deltaBiExecution)
 
@@ -79,21 +76,17 @@ monoExecution <- aggregate(DTmono$ExecutionRT,list(DTmono$practiced, DTmono$alph
 colnames(monoExecution) <- vars
 
 # Separate Novel and practiced trials encoding
-monoNovelEnc <- monoEncoding[monoEncoding$practiced == F,]
-summary(monoNovelEnc$RT)
-monoPracticedEnc <- monoEncoding[monoEncoding$practiced == T,]
-summary(monoPracticedEnc$RT)
+summary(monoEncoding[monoEncoding$practiced == F,]$RT)
+summary(monoEncoding[monoEncoding$practiced == T,]$RT)
 
 # Separate Novel and practiced trials execution
-monoNovelEx <- monoExecution[monoExecution$practiced == F,]
-summary(monoNovelEx$RT)
-monoPracticedEx <- monoExecution[monoExecution$practiced == T,]
-summary(monoPracticedEx$RT)
+summary(monoExecution[monoExecution$practiced == F,]$RT)
+summary(monoExecution[monoExecution$practiced == T,]$RT)
 
-deltaMonoEncoding <- (monoNovelEnc$RT - monoPracticedEnc$RT)
+deltaMonoEncoding <- (monoEncoding[monoEncoding$practiced == F,]$RT - monoEncoding[monoEncoding$practiced == T,]$RT)
 summary(deltaMonoEncoding)
 hist(deltaMonoEncoding)
-deltaMonoExecution <- (monoNovelEx$RT - monoPracticedEx$RT)
+deltaMonoExecution <- (monoExecution[monoExecution$practiced == F,]$RT - monoExecution[monoExecution$practiced == T,]$RT)
 summary(deltaMonoExecution)
 hist(deltaMonoExecution)
 
@@ -111,25 +104,71 @@ subjects <- read.table("/projects/BBT/RITL/groups_version8.txt")  #Has all subje
 DTExperiment <- merge(DTExperiment,subjects, by.x="Subject",by.y = "V1", all =T)
 
 # Aggregate by trial number, practiced, and language
-experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Trials, DTExperiment$Practiced, DTExperiment$V2), mean)
+experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Practiced, DTExperiment$V2), mean)
 experimentEx <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Trials, DTExperiment$Practiced, DTExperiment$V2), mean)
 
 ## Attempt to get error
 error <- function(simulations, experiment) {
   simulations$error <- sqrt((simulations$RT - (experiment/1000))**2) # Get error per observation, square and sqrt
   byParams <- aggregate(simulations$error, by = list(simulations$alpha, simulations$ans, simulations$`imaginal-delay`,simulations$le,simulations$nu), mean) #Get mean error per set of parameters
-  subset(byParams, byParams$x == min(byParams$x)) # get parameter set with least error
+  t(unlist(subset(byParams, byParams$x == min(byParams$x)))) # get parameter set with least error
 }
 
-error(biNovelEnc, experimentEnc$x[(experimentEnc$Group.2 == "No") & (experimentEnc$Group.3 == "Bilingual")])
-error(biPracticedEnc, experimentEnc$x[(experimentEnc$Group.2 == "Yes") & (experimentEnc$Group.3 == "Bilingual")])
+paramsBiEnc <- error(biEncoding[biEncoding$practiced == F,], experimentEnc$x[(experimentEnc$Group.1 == "No") & (experimentEnc$Group.2 == "Bilingual")])
+paramsBiEnc <- rbind(paramsBiEnc, error(biEncoding[biEncoding$practiced == T,], experimentEnc$x[(experimentEnc$Group.1 == "Yes") & (experimentEnc$Group.2 == "Bilingual")]))
 
-error(biNovelEx,experimentEx$x[(experimentEx$Group.2 == "No") & (experimentEx$Group.3 == "Bilingual")])
-error(biPracticedEx,experimentEx$x[(experimentEx$Group.2 == "Yes") & (experimentEx$Group.3 == "Bilingual")])
+paramsMonoEnc <- error(monoEncoding[monoEncoding$practiced == F,], experimentEnc$x[(experimentEnc$Group.1 == "No") & (experimentEnc$Group.2 == "Monolingual")])
+paramsMonoEnc <- rbind(paramsMonoEnc, error(monoEncoding[monoEncoding$practiced == T,], experimentEnc$x[(experimentEnc$Group.1 == "Yes") & (experimentEnc$Group.2 == "Monolingual")]))
 
-error(monoNovelEnc,experimentEnc$x[(experimentEnc$Group.2 == "No") & (experimentEnc$Group.3 == "Monolingual")])
-error(monoPracticedEnc,experimentEnc$x[(experimentEnc$Group.2 == "Yes") & (experimentEnc$Group.3 == "Monolingual")])
 
-error(monoNovelEx,experimentEx$x[(experimentEx$Group.2 == "No") & (experimentEx$Group.3 == "Monolingual")])
-error(monoPracticedEx,experimentEx$x[(experimentEx$Group.2 == "Yes") & (experimentEx$Group.3 == "Monolingual")])
+# Make images
 
+plotEncoding <- function(paramsBi, paramsMono, DTbi, DTmono) {
+  novelBi <- subset(DTbi, (practiced == F) & (alpha == paramsBi[1,1]) & (ans == paramsBi[1,2]) & (`imaginal-delay` == paramsBi[1,3]) & (le == paramsBi[1,4]) & (nu == paramsBi[1,5])) #Make sure novel is on row 1
+  practicedBi <- subset(DTbi, (practiced == T) & (alpha == paramsBi[2,1]) & (ans == paramsBi[2,2]) & (`imaginal-delay` == paramsBi[2,3]) & (le == paramsBi[2,4]) & (nu == paramsBi[2,5]))
+  
+  novelMono <- subset(DTmono, (practiced == F) & (alpha == paramsMono[1,1]) & (ans == paramsMono[1,2]) & (`imaginal-delay` == paramsMono[1,3]) & (le == paramsMono[1,4]) & (nu == paramsMono[1,5]))
+  practicedMono <- subset(DTmono, (practiced == T) & (alpha == paramsMono[2,1]) & (ans == paramsMono[2,2]) & (`imaginal-delay` == paramsMono[2,3]) & (le == paramsMono[2,4]) & (nu == paramsMono[2,5]))
+  
+  merged <- rbind(novelBi,practicedBi,novelMono,practicedMono)
+  ggplot(merged, aes(language,EncodingRT*1000,fill=practiced)) + 
+    geom_bar(stat = "summary", fun.y=mean,position = "dodge") + 
+    scale_fill_grey(start= 0.8, end = 0.2, breaks=c(FALSE,TRUE), labels=c("Novel", "Practiced"), name="") +
+    theme_bw() + 
+    labs(title = "Encoding Times", y = "Response Time (ms)", x ="")
+}
+plotEncoding(paramsBiEnc,paramsMonoEnc,DTbi,DTmono)
+
+
+experimentEx <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Practiced, DTExperiment$V2), mean)
+
+paramsBiEx <- error(biExecution[biExecution$practiced == F,], experimentEx$x[(experimentEx$Group.1 == "No") & (experimentEx$Group.2 == "Bilingual")])
+paramsBiEx <- rbind(paramsBiEx, error(biExecution[biExecution$practiced == T,], experimentEx$x[(experimentEx$Group.1 == "Yes") & (experimentEx$Group.2 == "Bilingual")]))
+paramsMonoEx <- error(monoExecution[monoExecution$practiced == F,], experimentEx$x[(experimentEx$Group.1 == "No") & (experimentEx$Group.2 == "Monolingual")])
+paramsMonoEx <- rbind(paramsMonoEx, error(monoExecution[monoExecution$practiced == T,], experimentEx$x[(experimentEx$Group.1 == "Yes") & (experimentEx$Group.2 == "Monolingual")]))
+ 
+# experimentEx2 <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Trials, DTExperiment$Practiced, DTExperiment$V2), mean)
+# 
+# paramsBiEx2 <- error(biExecution[biExecution$practiced == F,], experimentEx2$x[(experimentEx2$Group.2 == "No") & (experimentEx2$Group.3 == "Bilingual")])
+# paramsBiEx2 <- rbind(paramsBiEx2, error(biExecution[biExecution$practiced == T,], experimentEx2$x[(experimentEx2$Group.2 == "Yes") & (experimentEx2$Group.3 == "Bilingual")]))
+# paramsMonoEx2 <- error(monoExecution[monoExecution$practiced == F,], experimentEx2$x[(experimentEx2$Group.2 == "No") & (experimentEx2$Group.3 == "Monolingual")])
+# paramsMonoEx2 <- rbind(paramsMonoEx2, error(monoExecution[monoExecution$practiced == T,], experimentEx2$x[(experimentEx2$Group.2 == "Yes") & (experimentEx2$Group.3 == "Monolingual")]))
+
+
+# Make images
+
+plotExecution <- function(paramsBi, paramsMono, DTbi, DTmono) {
+  novelBi <- subset(DTbi, (practiced == F) & (alpha == paramsBi[1,1]) & (ans == paramsBi[1,2]) & (`imaginal-delay` == paramsBi[1,3]) & (le == paramsBi[1,4]) & (nu == paramsBi[1,5])) #Make sure novel is on row 1
+  practicedBi <- subset(DTbi, (practiced == T) & (alpha == paramsBi[2,1]) & (ans == paramsBi[2,2]) & (`imaginal-delay` == paramsBi[2,3]) & (le == paramsBi[2,4]) & (nu == paramsBi[2,5]))
+  
+  novelMono <- subset(DTmono, (practiced == F) & (alpha == paramsMono[1,1]) & (ans == paramsMono[1,2]) & (`imaginal-delay` == paramsMono[1,3]) & (le == paramsMono[1,4]) & (nu == paramsMono[1,5]))
+  practicedMono <- subset(DTmono, (practiced == T) & (alpha == paramsMono[2,1]) & (ans == paramsMono[2,2]) & (`imaginal-delay` == paramsMono[2,3]) & (le == paramsMono[2,4]) & (nu == paramsMono[2,5]))
+  
+  merged <- rbind(novelBi,practicedBi,novelMono,practicedMono)
+  ggplot(merged, aes(language,ExecutionRT*1000,fill=practiced)) + 
+    geom_bar(stat = "summary", fun.y=mean,position = "dodge") + 
+    scale_fill_grey(start= 0.8, end = 0.2, breaks=c(FALSE,TRUE), labels=c("Novel", "Practiced"), name="") +
+    theme_bw() + 
+    labs(title = "Execution Times", y = "Response Time (ms)", x ="")
+}
+plotExecution(paramsBiEx2,paramsMonoEx2,DTbi,DTmono)
