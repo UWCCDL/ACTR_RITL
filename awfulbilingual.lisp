@@ -198,7 +198,7 @@
 
    =goal>
    isa phase
-   step encoding-complete-1
+   step encoding-complete
 
    =visual>
    )
@@ -210,7 +210,7 @@
 
    =goal>
    isa phase
-   step encoding-complete-1
+   step encoding-complete
 
 
    ==>
@@ -221,7 +221,7 @@
 
   )
 
-(p retrieve-instructions-1
+(p retrieve-instructions
    ?imaginal>
    state        free
    buffer       empty
@@ -250,7 +250,7 @@
 
    =visual>
    =goal>
-     step remembered-1
+     step remembered
    +temporal>
      isa time
      ticks 0
@@ -276,7 +276,7 @@
 
    =goal>
    isa phase
-   step remembered-1
+   step remembered
 
    =temporal>
      isa time
@@ -311,7 +311,7 @@
    
    =goal>
    isa phase
-   step remembered-1
+   step remembered
 
    =temporal>
      isa time
@@ -435,7 +435,7 @@
    ==>
    
    *imaginal>
-   isa ritl-task
+   isa ritl-result
    x  =ans
 
    =goal>
@@ -525,7 +525,7 @@
    state free
 
    =imaginal>
-   isa ritl-task
+   isa ritl-result
    task3 =third
    y nil
    
@@ -540,7 +540,7 @@
    ==>
    
    *imaginal>
-   isa ritl-task
+   isa ritl-result
    y =ans
 
    +goal>
