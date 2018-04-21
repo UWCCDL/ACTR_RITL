@@ -615,9 +615,6 @@
    =imaginal>
    isa ritl-result
    result nil
-
-   ?imaginal>
-     state free ;; remove check?
    
    =retrieval>
    isa ritl-task

@@ -203,7 +203,7 @@
    =visual>
    )
 
-(p clear-imaginal-1
+(p clear-imaginal
    ?imaginal>
    state free
    buffer full
@@ -450,40 +450,6 @@
 
    )
 
-(p calculate-y
-   =goal>
-   isa phase
-   step execution-y
-   
-   =imaginal>
-   isa  ritl-result
-   y nil
-
-   =visual>
-   isa  ritl-inputs
-   y  =y
-
-   =retrieval>
-   isa  ritl-task
-   task2 =second
-
-   ==>
-
-   =goal>
-   
-   =visual>
-
-   *imaginal>
-   isa ritl-result
-   task =second
-
-   +retrieval>
-   isa operation
-   task =second
-   type unary
-   
-   )
-
 (p retrieve-arithmetic-fact-unary-y
    =imaginal>
    isa ritl-result
@@ -552,36 +518,6 @@
    task =third
    type binary
 
-   )
-
-
-(p calculate-binary
-
-   =goal>
-   isa phase
-   step execution-binary
-
-   =imaginal>
-   isa ritl-result
-   result nil
-   
-   =retrieval>
-   isa ritl-task
-   kind ritl-task
-   task3 =third
-
-   ==>
-
-   *imaginal>
-   isa ritl-result
-   task =third
-
-   =goal>
-
-   +retrieval>
-     isa operation
-     task =third
-     type binary
    )
 
 (p retrieve-arithmetic-fact-binary
