@@ -1,3 +1,7 @@
+library(stringr)
+
+# Generate 0 borrowings
+
 subtraction <- data.frame(termA = sample(1:9, 25, replace=TRUE ), termB = sample(1:9, 25, replace=TRUE ), ans = "")
 
 for (j in 1:nrow(subtraction)) {
@@ -8,10 +12,34 @@ for (j in 1:nrow(subtraction)) {
       terms$termB <- sample(0:9, 10, replace=TRUE)
     }
     subtraction[j,1] <- as.numeric(paste(terms$termA, collapse = "" ))
-    subtraction[j,2] <- as.numeric(paste(terms[,2], collapse = "" ))
+    subtraction[j,2] <- as.numeric(paste(terms$termB, collapse = "" ))
   }
 }
 subtraction$ans <- subtraction$termA - subtraction$termB
+
+
+# Generate 6/10 borrowings per 10digit number
+
+subtractionDiff <- data.frame(termA = sample(1:9, 25, replace=TRUE ), termB = sample(1:9, 25, replace=TRUE ), ans = "")
+
+for (j in 1:nrow(subtractionDiff)) {
+  while ((str_length(subtractionDiff[j,1]) < 10) & (str_length(subtractionDiff[j,2]) < 9)) {
+    terms <- data.frame(termA = rep(0,10), termB = rep(1,10))
+    while ((sum(terms$termA < terms$termB) != 6)) {
+      terms$termA <- sample(0:9, 10, replace=TRUE)
+      terms$termB <- sample(0:9, 10, replace=TRUE)
+    }
+    subtractionDiff[j,1] <- as.numeric(paste(terms$termA, collapse = "" ))
+    subtractionDiff[j,2] <- as.numeric(paste(terms$termB, collapse = "" ))
+  }
+}
+subtractionDiff$ans <- subtractionDiff$termA - subtractionDiff$termB
+
+
+#I stop for now. I'll pick 25 numbers for each condition. Answers are always positive 10 digit numbers, which is *not* specified here.
+
+
+###############################################
 
 # ;;generate easy stimuli for subtraction, no carrying/borrowing.
 # (defun get-easy-stims (nr)
