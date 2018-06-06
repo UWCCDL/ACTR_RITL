@@ -2,31 +2,26 @@ library(data.table)
 library(ggplot2)
 
 ## Read separate files (disabled)
-fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
-# 
+fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
+
+# Select files with only default :le and :nu
+fileList <- fileList[grepl("le_1.000_nu_0.000",fileList)]
+
+# # Read each file separately
 # for (i in 1:length(fileList)) {
-#   dat <- read.csv(paste("~/Documents/GitHub/ACTR_RITL/simulations_02/bilingual/", fileList[i], sep = ""),
+#   dat <- read.csv(paste("~/GitHub/ACTR_RITL/simulations_02/bilingual/", fileList[i], sep = ""),
 #            header=T,
 #            stringsAsFactors = F)
 #   assign(paste("sim",i,sep=""), dat)
 # }
 
-# Index practice trials
-add19 <- function(x) {x+(0:19)}
-practice <- as.vector(sapply(seq(1,6000,by = 60), add19))
-
-# dat <- dat[-practice,]
-# dat$language <- "bilingual"
-# dat$practiced <- dat$Rule == "(INCREMENT DOUBLE DIVIDE)" | dat$Rule == "(TRIPLE INCREMENT ADD)"
-# 
-# aggregate(dat$EncodingRT,list(dat$Practiced),mean)
-# aggregate(dat$ExecutionRT,list(dat$Practiced),mean)
-
 ## One Gigantic Data Table
-DTbi <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
+DTbi <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
 
-practice <- as.vector(sapply(seq(1,nrow(DTbi),by = 60), add19))
+# Remove practice trials
+add19 <- function(x) {x+(0:19)}
+practice <- as.vector(sapply(seq(1,nrow(DTbi),by = 60), add19)) # The first 20 rows of every 60 rows are practice trials
 DTbi <- DTbi[-practice,]
 
 DTbi$language <- "bilingual"
@@ -62,8 +57,11 @@ sum(deltaBiExecution > 0) / length(deltaBiExecution)
 # write.csv(biExecution, "bilingualExecution.csv")
 
 ## One Gigantic Data Table
-fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
-DTmono <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
+fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
+# Select files with only default :le and :nu
+fileList <- fileList[grepl("le_1.000_nu_0.000",fileList)]
+
+DTmono <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
 
 practice <- as.vector(sapply(seq(1,nrow(DTmono),by = 60), add19))
@@ -101,16 +99,16 @@ sum(deltaMonoExecution > 0) / length(deltaMonoExecution)
 DTComplete <- rbind(DTmono,DTbi)
 
 ## Read experiment data
-fileList <- list.files("/projects/actr/models/ACTR_RITL/RITLExperimentData/", pattern=".txt")
-DTExperiment <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/RITLExperimentData/", fileList, sep=""), fread, simplify = FALSE),
+fileList <- list.files("~/GitHub/ACTR_RITL/RITLExperimentData/", pattern=".txt")
+DTExperiment <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/RITLExperimentData/", fileList, sep=""), fread, simplify = FALSE),
                    use.names = TRUE, idcol = "FileName")
 DTExperiment <- DTExperiment[DTExperiment$Execution.RT != 0 | DTExperiment$Encoding.RT != 0,] # Remove rts of 0 ms
 DTExperiment <- DTExperiment[,-c("Procedure","Running")]
-subjects <- read.table("/projects/BBT/RITL/groups_version7.txt")  #Has all subject names (but V9 also exists??)
+subjects <- read.table("~/GitHub/ACTR_RITL/subjects_final_version.txt")  #Has all subject names (but V9 also exists??)
 DTExperiment <- merge(DTExperiment,subjects, by.x="Subject",by.y = "V1", all.y =T)
 
 # Aggregate by trial number, practiced, and language
-experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Practiced, DTExperiment$V2), mean)
+experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Practiced, DTExperiment$V), mean)
 experimentEnc$Group.1 <- c(FALSE, TRUE,FALSE,TRUE)
 
 ## Attempt to get error
