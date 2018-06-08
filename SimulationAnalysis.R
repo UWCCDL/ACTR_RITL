@@ -35,26 +35,6 @@ colnames(biEncoding) <- vars
 biExecution <- aggregate(DTbi$ExecutionRT,list(DTbi$practiced, DTbi$alpha, DTbi$ans, DTbi$`imaginal-delay`,DTbi$le,DTbi$nu),mean)
 colnames(biExecution) <- vars
 
-# Separate Novel and practiced trials
-summary(biEncoding[biEncoding$practiced == F,]$RT)
-summary(biEncoding[biEncoding$practiced == T,]$RT)
-# Proportions correctly predicted
-
-# Separate Novel and practiced trials execution
-summary(biExecution[biExecution$practiced == F,]$RT)
-summary(biExecution[biExecution$practiced == T,]$RT)
-
-deltaBiEncoding <- (biEncoding[biEncoding$practiced == F,]$RT - biEncoding[biEncoding$practiced == T,]$RT)
-summary(deltaBiEncoding)
-hist(deltaBiEncoding)
-sum(deltaBiEncoding > 0) / length(deltaBiEncoding)
-deltaBiExecution <- (biExecution[biExecution$practiced == F,]$RT - biExecution[biExecution$practiced == T,]$RT)
-summary(deltaBiExecution)
-hist(deltaBiExecution)
-sum(deltaBiExecution > 0) / length(deltaBiExecution)
-
-# write.csv(biEncoding, "bilingualEncoding.csv")
-# write.csv(biExecution, "bilingualExecution.csv")
 
 ## One Gigantic Data Table
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
@@ -76,25 +56,6 @@ colnames(monoEncoding) <- vars
 monoExecution <- aggregate(DTmono$ExecutionRT,list(DTmono$practiced, DTmono$alpha, DTmono$ans, DTmono$`imaginal-delay`,DTmono$le,DTmono$nu),mean)
 colnames(monoExecution) <- vars
 
-# Separate Novel and practiced trials encoding
-summary(monoEncoding[monoEncoding$practiced == F,]$RT)
-summary(monoEncoding[monoEncoding$practiced == T,]$RT)
-
-# Separate Novel and practiced trials execution
-summary(monoExecution[monoExecution$practiced == F,]$RT)
-summary(monoExecution[monoExecution$practiced == T,]$RT)
-
-deltaMonoEncoding <- (monoEncoding[monoEncoding$practiced == F,]$RT - monoEncoding[monoEncoding$practiced == T,]$RT)
-summary(deltaMonoEncoding)
-hist(deltaMonoEncoding)
-sum(deltaMonoEncoding > 0) / length(deltaMonoEncoding)
-deltaMonoExecution <- (monoExecution[monoExecution$practiced == F,]$RT - monoExecution[monoExecution$practiced == T,]$RT)
-summary(deltaMonoExecution)
-hist(deltaMonoExecution)
-sum(deltaMonoExecution > 0) / length(deltaMonoExecution)
-
-# write.csv(monoEncoding, "monolingualEncoding.csv")
-# write.csv(monoExecution, "monolingualExecution.csv")
 
 DTComplete <- rbind(DTmono,DTbi)
 
@@ -104,12 +65,13 @@ DTExperiment <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/RITLExperimentData/"
                    use.names = TRUE, idcol = "FileName")
 DTExperiment <- DTExperiment[DTExperiment$Execution.RT != 0 | DTExperiment$Encoding.RT != 0,] # Remove rts of 0 ms
 DTExperiment <- DTExperiment[,-c("Procedure","Running")]
-subjects <- read.table("~/GitHub/ACTR_RITL/subjects_final_version.txt")  #Has all subject names (but V9 also exists??)
+subjects <- read.table("~/GitHub/ACTR_RITL/groups_version7.txt")  #Has all subject names (but V9 also exists??)
 DTExperiment <- merge(DTExperiment,subjects, by.x="Subject",by.y = "V1", all.y =T)
 
+
+### GET INDIVIDUAL PARAMETER SETS FOR PHASE, PRACTICE, AND LANGUAGE
 # Aggregate by trial number, practiced, and language
 experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Practiced, DTExperiment$V), mean)
-experimentEnc$Group.1 <- c(FALSE, TRUE,FALSE,TRUE)
 
 ## Attempt to get error
 error <- function(simulations, experiment) {
@@ -123,7 +85,6 @@ paramsBiEnc <- rbind(paramsBiEnc, error(biEncoding[biEncoding$practiced == T,], 
 
 paramsMonoEnc <- error(monoEncoding[monoEncoding$practiced == F,], experimentEnc$x[(experimentEnc$Group.1 == "No") & (experimentEnc$Group.2 == "Monolingual")])
 paramsMonoEnc <- rbind(paramsMonoEnc, error(monoEncoding[monoEncoding$practiced == T,], experimentEnc$x[(experimentEnc$Group.1 == "Yes") & (experimentEnc$Group.2 == "Monolingual")]))
-
 
 # Make images
 
@@ -150,15 +111,11 @@ plotEncoding(paramsBiEnc,paramsMonoEnc,DTbi,DTmono)
 
 
 experimentEx <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Practiced, DTExperiment$V2), mean)
-experimentEx$Group.1 <- c(FALSE, TRUE,FALSE,TRUE)
 
 paramsBiEx <- error(biExecution[biExecution$practiced == F,], experimentEx$x[(experimentEx$Group.1 == "No") & (experimentEx$Group.2 == "Bilingual")])
 paramsBiEx <- rbind(paramsBiEx, error(biExecution[biExecution$practiced == T,], experimentEx$x[(experimentEx$Group.1 == "Yes") & (experimentEx$Group.2 == "Bilingual")]))
 paramsMonoEx <- error(monoExecution[monoExecution$practiced == F,], experimentEx$x[(experimentEx$Group.1 == "No") & (experimentEx$Group.2 == "Monolingual")])
 paramsMonoEx <- rbind(paramsMonoEx, error(monoExecution[monoExecution$practiced == T,], experimentEx$x[(experimentEx$Group.1 == "Yes") & (experimentEx$Group.2 == "Monolingual")]))
-
-
-
 
 # Make images
 
@@ -185,21 +142,20 @@ plotExecution <- function(paramsBi, paramsMono, DTbi, DTmono) {
 plotExecution(paramsBiEx,paramsMonoEx,DTbi,DTmono)
 
 
-###
+### GET SINGLE PARAMETER SET WITH SMALLEST MEAN SQUARED ERROR OVER ALL DATA
 
+# Aggregate all data by all parameters
 aggregatedComplete <- aggregate(DTComplete$EncodingRT, by = list(DTComplete$practiced, DTComplete$language, DTComplete$alpha, DTComplete$ans, DTComplete$`imaginal-delay`,DTComplete$le,DTComplete$nu), mean)
 aggregatedComplete <- cbind(aggregatedComplete, aggregate(DTComplete$ExecutionRT, by = list(DTComplete$practiced, DTComplete$language, DTComplete$alpha, DTComplete$ans, DTComplete$`imaginal-delay`,DTComplete$le,DTComplete$nu), mean)$x)
 colnames(aggregatedComplete) <- c("practiced", "language", "alpha", "ans", "imaginal-delay", "le", "nu", "EncRT","ExRT")
+
+#Determine error: errorExecution + errorEncoding
 aggregatedComplete$error <- (sqrt((aggregatedComplete$EncRT - (experimentEnc$x/1000))**2) + sqrt((aggregatedComplete$ExRT - (experimentEx$x/1000))**2))
+# Aggregate error by parameters, then take smallest error
 byParams <- aggregate(aggregatedComplete$error, by = list(aggregatedComplete$alpha, aggregatedComplete$ans, aggregatedComplete$`imaginal-delay`,aggregatedComplete$le,aggregatedComplete$nu), mean)
 params <- t(unlist(subset(byParams, byParams$x == min(byParams$x))))
 
-
-aggregatedCompleteEnc$exp <- experimentEnc$x/1000
-aggregatedCompleteEnc$error <- sqrt((aggregatedCompleteEnc$sim - aggregatedCompleteEnc$exp)**2)
-byParams <- aggregate(aggregatedCompleteEnc$error, by = list(aggregatedCompleteEnc$alpha, aggregatedCompleteEnc$ans, aggregatedCompleteEnc$`imaginal-delay`,aggregatedCompleteEnc$le,aggregatedCompleteEnc$nu), mean)
-paramsEnc <- t(unlist(subset(byParams, byParams$x == min(byParams$x))))
-
+# Plot and print RTs
 plotEncoding <- function(params, DTbi, DTmono) {
   novelBi <- subset(DTbi, (practiced == F) & (alpha == params[1]) & (ans == params[2]) & (`imaginal-delay` == params[3]) & (le == params[4]) & (nu == params[5])) #Make sure novel is on row 1
   print(mean(novelBi$EncodingRT*1000))
@@ -219,13 +175,6 @@ plotEncoding <- function(params, DTbi, DTmono) {
     theme_bw() + 
     labs(title = "Encoding Times", y = "Response Time (ms)", x ="") + ylim(0,5000)
 }
-plotEncoding(paramsEnc,DTbi,DTmono)
-
-colnames(aggregatedCompleteEx) <- c("practiced", "language", "alpha", "ans", "imaginal-delay", "le", "nu", "sim")
-aggregatedCompleteEx$exp <- experimentEx$x/1000
-aggregatedCompleteEx$error <- sqrt((aggregatedCompleteEx$sim - aggregatedCompleteEx$exp)**2)
-byParams <- aggregate(aggregatedCompleteEx$error, by = list(aggregatedCompleteEx$alpha, aggregatedCompleteEx$ans, aggregatedCompleteEx$`imaginal-delay`,aggregatedCompleteEx$le,aggregatedCompleteEx$nu), mean)
-paramsEx <- t(unlist(subset(byParams, byParams$x == min(byParams$x))))
 
 plotExecution <- function(params, DTbi, DTmono) {
   novelBi <- subset(DTbi, (practiced == F) & (alpha == params[1]) & (ans == params[2]) & (`imaginal-delay` == params[3]) & (le == params[4]) & (nu == params[5])) #Make sure novel is on row 1
@@ -246,10 +195,43 @@ plotExecution <- function(params, DTbi, DTmono) {
     theme_bw() + 
     labs(title = "Encoding Times", y = "Response Time (ms)", x ="") + ylim(0,5000)
 }
-plotExecution(paramsEx,DTbi,DTmono)
-
 
 plotEncoding(params,DTbi,DTmono)
 plotExecution(params,DTbi,DTmono)
+
+
+### Correlations based on each trial
+
+# Aggregate again, now by trial as well
+
+aggregatedComplete <- aggregate(DTComplete$EncodingRT, by = list(DTComplete$practiced, DTComplete$language, DTComplete$alpha, DTComplete$ans, DTComplete$`imaginal-delay`,DTComplete$le,DTComplete$nu, DTComplete$trial), mean)
+aggregatedComplete <- cbind(aggregatedComplete, aggregate(DTComplete$ExecutionRT, by = list(DTComplete$practiced, DTComplete$language, DTComplete$alpha, DTComplete$ans, DTComplete$`imaginal-delay`,DTComplete$le,DTComplete$nu, DTComplete$trial), mean)$x)
+colnames(aggregatedComplete) <- c("practiced", "language", "alpha", "ans", "imaginal-delay", "le", "nu", "trial", "EncRT","ExRT")
+
+#unique params combinations
+params <- unique(aggregatedComplete[,vars[2:6]])
+
+for (i in 1:length(params)) {
+  subset <- subset(aggregatedComplete, (practiced == F) & (alpha == params[i,1]) & (ans == params[i,2]) & (`imaginal-delay` == params[i,3]) & (le == params[i,4]) & (nu == params[i,5]))
+}
+
+experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Practiced, DTExperiment$V, DTExperiment$Trials), mean)
+experimentEx <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Practiced, DTExperiment$V, DTExperiment$Trials), mean)
+
+cor()
+
+for (i in 1:length(unique(DTComplete$alpha))) {
+  datAlpha <- DTComplete[DTComplete$alpha == unique(DTComplete$alpha)[i],]
+  
+  aggregated <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$V, DTExperiment$Trials), mean)
+
+  print(
+    ggplot(datAlpha,aes(trial,EncodingRT*1000,colour=language)) +
+      stat_summary(fun.y="mean", geom = "point") +
+      geom_point(data = aggregated,aes(Group.2, x,colour=Group.1)))
+  
+}
+
+
 
 
