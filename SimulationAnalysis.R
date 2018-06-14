@@ -5,7 +5,7 @@ library(ggplot2)
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
 
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("le_1.000_nu_0.000",fileList)]
+fileList <- fileList[grepl("nu_0.000",fileList)]
 
 # # Read each file separately
 # for (i in 1:length(fileList)) {
@@ -39,7 +39,7 @@ colnames(biExecution) <- vars
 ## One Gigantic Data Table
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("le_1.000_nu_0.000",fileList)]
+fileList <- fileList[grepl("nu_0.000",fileList)]
 
 DTmono <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
@@ -55,7 +55,6 @@ monoEncoding <- aggregate(DTmono$EncodingRT,list(DTmono$practiced, DTmono$alpha,
 colnames(monoEncoding) <- vars
 monoExecution <- aggregate(DTmono$ExecutionRT,list(DTmono$practiced, DTmono$alpha, DTmono$ans, DTmono$`imaginal-delay`,DTmono$le,DTmono$nu),mean)
 colnames(monoExecution) <- vars
-
 
 DTComplete <- rbind(DTmono,DTbi)
 
@@ -107,7 +106,7 @@ plotEncoding <- function(paramsBi, paramsMono, DTbi, DTmono) {
     theme_bw() + 
     labs(title = "Encoding Times", y = "Response Time (ms)", x ="") + ylim(0,5000)
 }
-plotEncoding(paramsBiEnc,paramsMonoEnc,DTbi,DTmono)
+# plotEncoding(paramsBiEnc,paramsMonoEnc,DTbi,DTmono)
 
 
 experimentEx <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Practiced, DTExperiment$V2), mean)
@@ -139,7 +138,7 @@ plotExecution <- function(paramsBi, paramsMono, DTbi, DTmono) {
     theme_bw() + 
     labs(title = "Execution Times", y = "Response Time (ms)", x ="") + ylim(0,5000)
 }
-plotExecution(paramsBiEx,paramsMonoEx,DTbi,DTmono)
+# plotExecution(paramsBiEx,paramsMonoEx,DTbi,DTmono)
 
 
 ### GET SINGLE PARAMETER SET WITH SMALLEST MEAN SQUARED ERROR OVER ALL DATA
@@ -193,45 +192,40 @@ plotExecution <- function(params, DTbi, DTmono) {
     geom_bar(stat = "summary", fun.y=mean,position = "dodge") + 
     scale_fill_grey(start= 0.8, end = 0.2, breaks=c(FALSE,TRUE), labels=c("Novel", "Practiced"), name="") +
     theme_bw() + 
-    labs(title = "Encoding Times", y = "Response Time (ms)", x ="") + ylim(0,5000)
+    labs(title = "Execution Times", y = "Response Time (ms)", x ="") + ylim(0,5000)
 }
 
 plotEncoding(params,DTbi,DTmono)
 plotExecution(params,DTbi,DTmono)
+params
 
 
 ### Correlations based on each trial
 
-# Aggregate again, now by trial as well
 
-aggregatedComplete <- aggregate(DTComplete$EncodingRT, by = list(DTComplete$practiced, DTComplete$language, DTComplete$alpha, DTComplete$ans, DTComplete$`imaginal-delay`,DTComplete$le,DTComplete$nu, DTComplete$trial), mean)
-aggregatedComplete <- cbind(aggregatedComplete, aggregate(DTComplete$ExecutionRT, by = list(DTComplete$practiced, DTComplete$language, DTComplete$alpha, DTComplete$ans, DTComplete$`imaginal-delay`,DTComplete$le,DTComplete$nu, DTComplete$trial), mean)$x)
-colnames(aggregatedComplete) <- c("practiced", "language", "alpha", "ans", "imaginal-delay", "le", "nu", "trial", "EncRT","ExRT")
+# Find params that correlate the most with these datapoints (so, not by trial, that's optional for later)
 
-#unique params combinations
-params <- unique(aggregatedComplete[,vars[2:6]])
+meanRTs <- cbind(experimentEnc, experimentEx$x)
+colnames(meanRTs) <- c("practiced","language","EncRT","ExRT")
 
-for (i in 1:length(params)) {
-  subset <- subset(aggregatedComplete, (practiced == F) & (alpha == params[i,1]) & (ans == params[i,2]) & (`imaginal-delay` == params[i,3]) & (le == params[i,4]) & (nu == params[i,5]))
-}
+allParams <- unique(aggregatedComplete[,c('alpha','ans','imaginal-delay','le','nu')])
 
-experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Practiced, DTExperiment$V, DTExperiment$Trials), mean)
-experimentEx <- aggregate(DTExperiment$Execution.RT, by = list(DTExperiment$Practiced, DTExperiment$V, DTExperiment$Trials), mean)
-
-cor()
-
-for (i in 1:length(unique(DTComplete$alpha))) {
-  datAlpha <- DTComplete[DTComplete$alpha == unique(DTComplete$alpha)[i],]
+for (i in 1:nrow(allParams)) {
+  dat <- DTComplete[(alpha == allParams[i,1]) & (ans == allParams[i,2]) & (`imaginal-delay` == allParams[i,3]) & (le == allParams[i,4]) & (nu == allParams[i,5]),]
   
-  aggregated <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$V, DTExperiment$Trials), mean)
-
-  print(
-    ggplot(datAlpha,aes(trial,EncodingRT*1000,colour=language)) +
-      stat_summary(fun.y="mean", geom = "point") +
-      geom_point(data = aggregated,aes(Group.2, x,colour=Group.1)))
+  aggregated <- aggregate(dat$EncodingRT, by = list(dat$practiced, dat$language), mean)
+  aggregated <- cbind(aggregated, aggregate(dat$ExecutionRT, by = list(dat$practiced, dat$language), mean)$x)
+  colnames(aggregated) <- c("practiced","language","EncRT","ExRT")
+  
+  allParams$EncCor[i] <- cor(meanRTs$EncRT,aggregated$EncRT)
+  allParams$ExCor[i] <- cor(meanRTs$ExRT,aggregated$ExRT)
+  allParams$cor[i] <- allParams$EncCor[i] + allParams$ExCor[i]
   
 }
 
+params <- t(unlist(subset(allParams, allParams$cor == max(allParams$cor)))) # get parameter set with least error
 
-
+plotEncoding(params,DTbi,DTmono)
+plotExecution(params,DTbi,DTmono)
+params
 
