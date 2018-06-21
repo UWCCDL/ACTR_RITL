@@ -5,7 +5,7 @@ library(ggplot2)
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
 
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("alpha_0.200",fileList) & grepl("imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
+fileList <- fileList[grepl("nu_0.000",fileList)]
 
 # # Read each file separately
 # for (i in 1:length(fileList)) {
@@ -39,7 +39,7 @@ colnames(biExecution) <- vars
 ## One Gigantic Data Table
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("alpha_0.200",fileList) & grepl("imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
+fileList <- fileList[grepl("nu_0.000",fileList)]
 
 DTmono <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
@@ -74,7 +74,7 @@ experimentEnc <- aggregate(DTExperiment$Encoding.RT, by = list(DTExperiment$Prac
 
 ## Attempt to get error
 error <- function(simulations, experiment) {
-  simulations$error <- sqrt((simulations$RT - (experiment/1000))**2) # Get error per observation, square and sqrt
+  simulations$error <- sqrt((simulations$RT*1000 - (experiment))**2) # Get error per observation, square and sqrt
   byParams <- aggregate(simulations$error, by = list(simulations$alpha, simulations$ans, simulations$`imaginal-delay`,simulations$le,simulations$nu), mean) #Get mean error per set of parameters
   t(unlist(subset(byParams, byParams$x == min(byParams$x)))) # get parameter set with least error
 }
@@ -149,7 +149,7 @@ aggregatedComplete <- cbind(aggregatedComplete, aggregate(DTComplete$ExecutionRT
 colnames(aggregatedComplete) <- c("practiced", "language", "alpha", "ans", "imaginal-delay", "le", "nu", "EncRT","ExRT")
 
 #Determine error: errorExecution + errorEncoding
-aggregatedComplete$error <- (sqrt((aggregatedComplete$EncRT - (experimentEnc$x/1000))**2) + sqrt((aggregatedComplete$ExRT - (experimentEx$x/1000))**2))
+aggregatedComplete$error <- (sqrt((aggregatedComplete$EncRT*1000 - (experimentEnc$x))**2) + sqrt((aggregatedComplete$ExRT*1000 - (experimentEx$x))**2))
 # Aggregate error by parameters, then take smallest error
 byParams <- aggregate(aggregatedComplete$error, by = list(aggregatedComplete$alpha, aggregatedComplete$ans, aggregatedComplete$`imaginal-delay`,aggregatedComplete$le,aggregatedComplete$nu), mean)
 params <- t(unlist(subset(byParams, byParams$x == min(byParams$x))))
