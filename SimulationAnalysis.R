@@ -5,7 +5,7 @@ library(ggplot2)
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
 
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("nu_0.000",fileList)]
+fileList <- fileList[grepl("alpha_0.200",fileList) & grepl("imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
 # # Read each file separately
 # for (i in 1:length(fileList)) {
@@ -39,7 +39,7 @@ colnames(biExecution) <- vars
 ## One Gigantic Data Table
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("nu_0.000",fileList)]
+fileList <- fileList[grepl("alpha_0.200",fileList) & grepl("imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
 DTmono <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
