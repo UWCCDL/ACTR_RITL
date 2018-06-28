@@ -5,7 +5,7 @@ library(ggplot2)
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
 
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("nu_0.000",fileList)]
+fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
 # # Read each file separately
 # for (i in 1:length(fileList)) {
@@ -39,7 +39,7 @@ colnames(biExecution) <- vars
 ## One Gigantic Data Table
 fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("nu_0.000",fileList)]
+fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
 DTmono <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
@@ -228,4 +228,17 @@ params <- t(unlist(subset(allParams, allParams$cor == max(allParams$cor)))) # ge
 plotEncoding(params,DTbi,DTmono)
 plotExecution(params,DTbi,DTmono)
 params
+
+
+### Parameter space partitioning (NEED FULL DATASET FOR THIS!!)
+
+# Percentage NovelEncoding > PracticedEncoding for bilinguals
+prop.table(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "bilingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "bilingual",]$EncRT)
+# Percentage NovelEncoding > PracticedEncoding for monolinguals
+prop.table(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$EncRT)
+
+# Percentage NovelExecution > PracticedExecution for monolinguals
+prop.table(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$ExRT)
+
+
 
