@@ -67,6 +67,7 @@ DTExperiment <- DTExperiment[,-c("Procedure","Running")]
 subjects <- read.table("~/GitHub/ACTR_RITL/groups_version7.txt")  #Has all subject names (but V9 also exists??)
 DTExperiment <- merge(DTExperiment,subjects, by.x="Subject",by.y = "V1", all.y =T)
 
+experimentAcc <- aggregate(DTExperiment$Probe.ACC, by = list(DTExperiment$Practiced, DTExperiment$V), mean)
 
 ### GET INDIVIDUAL PARAMETER SETS FOR PHASE, PRACTICE, AND LANGUAGE
 # Aggregate by trial number, practiced, and language

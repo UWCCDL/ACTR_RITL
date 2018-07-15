@@ -8,11 +8,11 @@
 (sgp :trace-detail            low 
      :show-focus              t 
      :esc                     t 
-     :le                      0.94
-     :nu                      0.1
+     :le                      1
+     :nu                      0
      :er                      t
-     :imaginal-delay          0.17
-     :ans                     0.02
+     :imaginal-delay          0.20
+     :ans                     0.04
      ;:imaginal-activation     10
      ;:mas                     2
      :time-noise              0.02
@@ -22,7 +22,7 @@
      :ult		      t
      :tt                      2
      :pct                     t
-     :alpha                   0.2
+     :alpha                   0.1
      :bll                     0.5
      :lf                      1
      ;; Perceptual params
