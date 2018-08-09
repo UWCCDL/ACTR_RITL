@@ -2,10 +2,10 @@ library(data.table)
 library(ggplot2)
 
 ## Read separate files (disabled)
-fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
+fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
 
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
+# fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
 # # Read each file separately
 # for (i in 1:length(fileList)) {
@@ -16,7 +16,7 @@ fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_
 # }
 
 ## One Gigantic Data Table
-DTbi <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
+DTbi <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
 
 # Remove practice trials
@@ -37,11 +37,11 @@ colnames(biExecution) <- vars
 
 
 ## One Gigantic Data Table
-fileList <- list.files("~/GitHub/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
+fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
 # Select files with only default :le and :nu
-fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
+#fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
-DTmono <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
+DTmono <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
 
 practice <- as.vector(sapply(seq(1,nrow(DTmono),by = 60), add19))
@@ -59,12 +59,12 @@ colnames(monoExecution) <- vars
 DTComplete <- rbind(DTmono,DTbi)
 
 ## Read experiment data
-fileList <- list.files("~/GitHub/ACTR_RITL/RITLExperimentData/", pattern=".txt")
-DTExperiment <- rbindlist( sapply(paste("~/GitHub/ACTR_RITL/RITLExperimentData/", fileList, sep=""), fread, simplify = FALSE),
+fileList <- list.files("/projects/actr/models/ACTR_RITL/RITLExperimentData/", pattern=".txt")
+DTExperiment <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/RITLExperimentData/", fileList, sep=""), fread, simplify = FALSE),
                    use.names = TRUE, idcol = "FileName")
 DTExperiment <- DTExperiment[DTExperiment$Execution.RT != 0 | DTExperiment$Encoding.RT != 0,] # Remove rts of 0 ms
 DTExperiment <- DTExperiment[,-c("Procedure","Running")]
-subjects <- read.table("~/GitHub/ACTR_RITL/groups_version7.txt")  #Has all subject names (but V9 also exists??)
+subjects <- read.table("/projects/actr/models/ACTR_RITL/groups_version7.txt")  #Has all subject names (but V9 also exists??)
 DTExperiment <- merge(DTExperiment,subjects, by.x="Subject",by.y = "V1", all.y =T)
 
 experimentAcc <- aggregate(DTExperiment$Probe.ACC, by = list(DTExperiment$Practiced, DTExperiment$V), mean)
@@ -224,22 +224,23 @@ for (i in 1:nrow(allParams)) {
   
 }
 
-params <- t(unlist(subset(allParams, allParams$cor == max(allParams$cor)))) # get parameter set with least error
+corParams <- t(unlist(subset(allParams, allParams$cor == max(allParams$cor)))) # get parameter set with least error
 
-plotEncoding(params,DTbi,DTmono)
-plotExecution(params,DTbi,DTmono)
-params
+plotEncoding(corParams,DTbi,DTmono)
+plotExecution(corParams,DTbi,DTmono)
+corParams
 
 
 ### Parameter space partitioning (NEED FULL DATASET FOR THIS!!)
 
 # Percentage NovelEncoding > PracticedEncoding for bilinguals
-prop.table(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "bilingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "bilingual",]$EncRT)
+sum(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "bilingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "bilingual",]$EncRT) / length(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "bilingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "bilingual",]$EncRT)
 # Percentage NovelEncoding > PracticedEncoding for monolinguals
-prop.table(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$EncRT)
+sum(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$EncRT) / length(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$EncRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$EncRT) 
 
 # Percentage NovelExecution > PracticedExecution for monolinguals
-prop.table(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$ExRT)
-
+sum(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "bilingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "bilingual",]$ExRT) / length(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "bilingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "bilingual",]$ExRT)
+# Percentage NovelExecution > PracticedExecution for monolinguals
+sum(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$ExRT) / length(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$ExRT)
 
 
