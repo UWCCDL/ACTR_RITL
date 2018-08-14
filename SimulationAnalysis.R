@@ -7,14 +7,6 @@ fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual
 # Select files with only default :le and :nu
 # fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
 
-# # Read each file separately
-# for (i in 1:length(fileList)) {
-#   dat <- read.csv(paste("~/GitHub/ACTR_RITL/simulations_02/bilingual/", fileList[i], sep = ""),
-#            header=T,
-#            stringsAsFactors = F)
-#   assign(paste("sim",i,sep=""), dat)
-# }
-
 ## One Gigantic Data Table
 DTbi <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
@@ -169,6 +161,7 @@ plotEncoding <- function(params, DTbi, DTmono) {
   print(mean(practicedMono$EncodingRT*1000))
   
   merged <- rbind(novelBi,practicedBi,novelMono,practicedMono)
+  colnames(merged)[1] <- "fileName"
   ggplot(merged, aes(language,EncodingRT*1000,fill=practiced)) + 
     geom_bar(stat = "summary", fun.y=mean,position = "dodge") + 
     scale_fill_grey(start= 0.8, end = 0.2, breaks=c(FALSE,TRUE), labels=c("Novel", "Practiced"), name="") +
@@ -189,6 +182,7 @@ plotExecution <- function(params, DTbi, DTmono) {
   print(mean(practicedMono$ExecutionRT*1000))
   
   merged <- rbind(novelBi,practicedBi,novelMono,practicedMono)
+  colnames(merged)[1] <- "fileName"
   ggplot(merged, aes(language,ExecutionRT*1000,fill=practiced)) + 
     geom_bar(stat = "summary", fun.y=mean,position = "dodge") + 
     scale_fill_grey(start= 0.8, end = 0.2, breaks=c(FALSE,TRUE), labels=c("Novel", "Practiced"), name="") +
