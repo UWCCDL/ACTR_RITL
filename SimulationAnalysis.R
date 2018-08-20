@@ -11,6 +11,8 @@ fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual
 DTbi <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
 
+countBi <- count(DTbi,vars = c("alpha"," ans","`imaginal-delay`","le" ,"nu"))
+
 # Remove practice trials
 add19 <- function(x) {x+(0:19)}
 practice <- as.vector(sapply(seq(1,nrow(DTbi),by = 60), add19)) # The first 20 rows of every 60 rows are practice trials
@@ -35,6 +37,15 @@ fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/monolingu
 
 DTmono <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
+
+# Check for incomplete data sets
+countMono <- count(DTmono,vars = c("alpha"," ans","`imaginal-delay`","le" ,"nu"))
+countMono$incomplete <- countMono$freq == 6000
+View(countMono[countMono$incomplete == F,])
+temp <- countMono[countMono$incomplete == F,]
+temp$ansNotFive <- temp$ans == 0.05
+temp[temp$ansNotFive ==F,]
+
 
 practice <- as.vector(sapply(seq(1,nrow(DTmono),by = 60), add19))
 DTmono <- DTmono[-practice,]
@@ -223,6 +234,8 @@ corParams <- t(unlist(subset(allParams, allParams$cor == max(allParams$cor)))) #
 plotEncoding(corParams,DTbi,DTmono)
 plotExecution(corParams,DTbi,DTmono)
 corParams
+
+paramsMerge <- merge(byParams,allParams,by.x = colnames(byParams[1:5]), by.y = colnames(allParams[1:5]))
 
 
 ### Parameter space partitioning (NEED FULL DATASET FOR THIS!!)
