@@ -1,11 +1,12 @@
 library(data.table)
 library(ggplot2)
+library(plyr)
 
-## Read separate files (disabled)
+## Get bilingual simulation data
 fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
 
-# Select files with only default :le and :nu
-# fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
+# Select files with specific parameters (optional)
+fileList <- fileList[!grepl("ans_0.050",fileList)]
 
 ## One Gigantic Data Table
 DTbi <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
@@ -30,10 +31,10 @@ biExecution <- aggregate(DTbi$ExecutionRT,list(DTbi$practiced, DTbi$alpha, DTbi$
 colnames(biExecution) <- vars
 
 
-## One Gigantic Data Table
+## One Gigantic Data Table of monolingual simulation data
 fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/monolingual",pattern=".txt")
-# Select files with only default :le and :nu
-#fileList <- fileList[grepl("alpha_0.100_ans_0.040_imaginal-delay_0.200_le_1.000_nu_0.000",fileList)]
+# Select files with specific parameters (optional)
+fileList <- fileList[!grepl("ans_0.050",fileList)]
 
 DTmono <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
@@ -223,8 +224,8 @@ for (i in 1:nrow(allParams)) {
   aggregated <- cbind(aggregated, aggregate(dat$ExecutionRT, by = list(dat$practiced, dat$language), mean)$x)
   colnames(aggregated) <- c("practiced","language","EncRT","ExRT")
   
-  allParams$EncCor[i] <- cor(meanRTs$EncRT,aggregated$EncRT)
-  allParams$ExCor[i] <- cor(meanRTs$ExRT,aggregated$ExRT)
+  allParams$EncCor[i] <- cor(meanRTs$EncRT,aggregated$EncRT) # encoding correlation between experiment and param set
+  allParams$ExCor[i] <- cor(meanRTs$ExRT,aggregated$ExRT) # execution correlation between experiment and param set
   allParams$cor[i] <- allParams$EncCor[i] + allParams$ExCor[i]
   
 }
@@ -236,7 +237,8 @@ plotExecution(corParams,DTbi,DTmono)
 corParams
 
 paramsMerge <- merge(byParams,allParams,by.x = colnames(byParams[1:5]), by.y = colnames(allParams[1:5]))
-
+paramsRMSECor <- t(unlist(subset(paramsMerge, paramsMerge$cor == max(paramsMerge$cor) | paramsMerge$x == min(paramsMerge$x)))) # Consider correlation and RMSE
+paramsRMSECor
 
 ### Parameter space partitioning (NEED FULL DATASET FOR THIS!!)
 
