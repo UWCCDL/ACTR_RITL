@@ -207,10 +207,7 @@ plotExecution(params,DTbi,DTmono)
 params
 
 
-### Correlations based on each trial
-
-
-# Find params that correlate the most with these datapoints (so, not by trial, that's optional for later)
+## Find params that correlate the most with these datapoints (so, not by trial, that's optional for later)
 
 meanRTs <- cbind(experimentEnc, experimentEx$x)
 colnames(meanRTs) <- c("practiced","language","EncRT","ExRT")
