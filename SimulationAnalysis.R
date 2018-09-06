@@ -249,4 +249,9 @@ sum(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplet
 # Percentage NovelExecution > PracticedExecution for monolinguals
 sum(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$ExRT) / length(aggregatedComplete[aggregatedComplete$practiced == FALSE & aggregatedComplete$language == "monolingual",]$ExRT > aggregatedComplete[aggregatedComplete$practiced == TRUE & aggregatedComplete$language == "monolingual",]$ExRT)
 
-
+# Boxplot of execution RTs over all parameters
+ggplot(data = aggregatedComplete, aes(x=language, y =ExRT,fill = practiced)) +
+  geom_boxplot() +
+  theme_bw() +
+  labs(title = "Execution Times over Parameter Space", y = "Response Time (ms)", x = "") +
+  scale_fill_grey(start = 0.8, end = 0.3, name = "", breaks = c(FALSE,TRUE), label = c("Novel", "Practiced"))
