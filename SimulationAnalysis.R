@@ -12,8 +12,6 @@ fileList <- fileList[!grepl("ans_0.050",fileList)]
 DTbi <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/bilingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
 
-countBi <- count(DTbi,vars = c("alpha"," ans","`imaginal-delay`","le" ,"nu"))
-
 # Remove practice trials
 add19 <- function(x) {x+(0:19)}
 practice <- as.vector(sapply(seq(1,nrow(DTbi),by = 60), add19)) # The first 20 rows of every 60 rows are practice trials
@@ -38,14 +36,6 @@ fileList <- fileList[!grepl("ans_0.050",fileList)]
 
 DTmono <- rbindlist( sapply(paste("/projects/actr/models/ACTR_RITL/simulations_02/monolingual/", fileList, sep=""), fread, simplify = FALSE),
                  use.names = TRUE, idcol = "idx" )
-
-# Check for incomplete data sets
-countMono <- count(DTmono,vars = c("alpha"," ans","`imaginal-delay`","le" ,"nu"))
-countMono$incomplete <- countMono$freq == 6000
-View(countMono[countMono$incomplete == F,])
-temp <- countMono[countMono$incomplete == F,]
-temp$ansNotFive <- temp$ans == 0.05
-temp[temp$ansNotFive ==F,]
 
 
 practice <- as.vector(sapply(seq(1,nrow(DTmono),by = 60), add19))
@@ -255,3 +245,34 @@ ggplot(data = aggregatedComplete, aes(x=language, y =ExRT,fill = practiced)) +
   theme_bw() +
   labs(title = "Execution Times over Parameter Space", y = "Response Time (ms)", x = "") +
   scale_fill_grey(start = 0.8, end = 0.3, name = "", breaks = c(FALSE,TRUE), label = c("Novel", "Practiced"))
+
+plotAlpha <- ggplot(data = aggregatedComplete, aes(x=interaction(language,practiced), y =ExRT)) +
+  geom_point(data = aggregatedComplete, aes(col = as.factor(alpha))) +
+  theme_bw()
+plotAns <- ggplot(data = aggregatedComplete, aes(x=interaction(language,practiced), y =ExRT)) +
+  geom_point(data = aggregatedComplete, aes(col = as.factor(ans))) +
+  theme_bw()
+plotImDelay <- ggplot(data = aggregatedComplete, aes(x=interaction(practiced,language), y =ExRT)) +
+  geom_point(data = aggregatedComplete, aes(col = as.factor(`imaginal-delay`))) +
+  theme_bw() +
+  labs(title = "Execution Times by :IMAGINAL-DELAY", y = "Response Time (ms)", x = "", color = "imaginal-delay") +
+  scale_x_discrete(breaks = waiver(), labels = c("Bilingual Novel"," Bilingual Practiced", "Monolingual Novel", "Monolingual Practiced"))
+plotLe <- ggplot(data = aggregatedComplete, aes(x=interaction(practiced,language), y =ExRT)) +
+  geom_point(data = aggregatedComplete, aes(col = as.factor(le))) +
+  theme_bw() +
+  labs(title = "Execution Times by :LE", y = "Response Time (ms)", x = "", color = "le") +
+  scale_x_discrete(breaks = waiver(), labels = c("Bilingual Novel"," Bilingual Practiced", "Monolingual Novel", "Monolingual Practiced"))
+plotNu <- ggplot(data = aggregatedComplete, aes(x=interaction(practiced,language), y =ExRT)) +
+  geom_point(data = aggregatedComplete, aes(col = as.factor(nu))) +
+  theme_bw() +
+  labs(title = "Execution Times by :NU", y = "Response Time (ms)", x = "", color = "nu") +
+  scale_x_discrete(breaks = waiver(), labels = c("Bilingual Novel"," Bilingual Practiced", "Monolingual Novel", "Monolingual Practiced"))
+
+
+ExRTAlpha <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$alpha), mean)
+ExRTAns <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$ans), mean)
+ExRTImDelay <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$`imaginal-delay`), mean)
+ExRTLe <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$le), mean)
+ExRTNu <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$nu), mean)
+
+
