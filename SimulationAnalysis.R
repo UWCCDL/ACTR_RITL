@@ -1,6 +1,7 @@
 library(data.table)
 library(ggplot2)
 library(plyr)
+library(gridExtra)
 
 ## Get bilingual simulation data
 fileList <- list.files("/projects/actr/models/ACTR_RITL/simulations_02/bilingual",pattern=".txt")
@@ -246,33 +247,90 @@ ggplot(data = aggregatedComplete, aes(x=language, y =ExRT,fill = practiced)) +
   labs(title = "Execution Times over Parameter Space", y = "Response Time (ms)", x = "") +
   scale_fill_grey(start = 0.8, end = 0.3, name = "", breaks = c(FALSE,TRUE), label = c("Novel", "Practiced"))
 
-plotAlpha <- ggplot(data = aggregatedComplete, aes(x=interaction(language,practiced), y =ExRT)) +
-  geom_point(data = aggregatedComplete, aes(col = as.factor(alpha))) +
-  theme_bw()
-plotAns <- ggplot(data = aggregatedComplete, aes(x=interaction(language,practiced), y =ExRT)) +
-  geom_point(data = aggregatedComplete, aes(col = as.factor(ans))) +
-  theme_bw()
-plotImDelay <- ggplot(data = aggregatedComplete, aes(x=interaction(practiced,language), y =ExRT)) +
-  geom_point(data = aggregatedComplete, aes(col = as.factor(`imaginal-delay`))) +
-  theme_bw() +
-  labs(title = "Execution Times by :IMAGINAL-DELAY", y = "Response Time (ms)", x = "", color = "imaginal-delay") +
-  scale_x_discrete(breaks = waiver(), labels = c("Bilingual Novel"," Bilingual Practiced", "Monolingual Novel", "Monolingual Practiced"))
-plotLe <- ggplot(data = aggregatedComplete, aes(x=interaction(practiced,language), y =ExRT)) +
-  geom_point(data = aggregatedComplete, aes(col = as.factor(le))) +
-  theme_bw() +
-  labs(title = "Execution Times by :LE", y = "Response Time (ms)", x = "", color = "le") +
-  scale_x_discrete(breaks = waiver(), labels = c("Bilingual Novel"," Bilingual Practiced", "Monolingual Novel", "Monolingual Practiced"))
-plotNu <- ggplot(data = aggregatedComplete, aes(x=interaction(practiced,language), y =ExRT)) +
-  geom_point(data = aggregatedComplete, aes(col = as.factor(nu))) +
-  theme_bw() +
-  labs(title = "Execution Times by :NU", y = "Response Time (ms)", x = "", color = "nu") +
-  scale_x_discrete(breaks = waiver(), labels = c("Bilingual Novel"," Bilingual Practiced", "Monolingual Novel", "Monolingual Practiced"))
-
-
+# Mean execution times by parameter
 ExRTAlpha <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$alpha), mean)
 ExRTAns <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$ans), mean)
 ExRTImDelay <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$`imaginal-delay`), mean)
 ExRTLe <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$le), mean)
 ExRTNu <- aggregate(DTComplete$ExecutionRT,list(DTComplete$practiced,DTComplete$language,DTComplete$nu), mean)
 
+plotAlphaEx <- ggplot(ExRTAlpha, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "alpha") +
+  ylim(2.7,4.3) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
 
+plotAnsEx <- ggplot(ExRTAns, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "ans") +
+  ylim(2.7,4.3) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+plotImDelay <- ggplot(ExRTImDelay, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "imaginal-delay") +
+  ylim(2.7,4.3) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+plotLe <- ggplot(ExRTLe, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "le") +
+  ylim(2.7,4.3) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+plotNu <- ggplot(ExRTNu, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  ylim(2.7,4.3) +
+  labs(y = "Response Time (ms)", x = "", color = "nu") +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+grid.arrange(plotAlphaEx, plotAnsEx, plotImDelay,plotLe,plotNu, ncol = 5)
+
+EncRTAlpha <- aggregate(DTComplete$EncodingRT,list(DTComplete$practiced,DTComplete$language,DTComplete$alpha), mean)
+EncRTAns <- aggregate(DTComplete$EncodingRT,list(DTComplete$practiced,DTComplete$language,DTComplete$ans), mean)
+EncRTImDelay <- aggregate(DTComplete$EncodingRT,list(DTComplete$practiced,DTComplete$language,DTComplete$`imaginal-delay`), mean)
+EncRTLe <- aggregate(DTComplete$EncodingRT,list(DTComplete$practiced,DTComplete$language,DTComplete$le), mean)
+EncRTNu <- aggregate(DTComplete$EncodingRT,list(DTComplete$practiced,DTComplete$language,DTComplete$nu), mean)
+
+plotAlphaEnc <- ggplot(EncRTAlpha, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "alpha") +
+  ylim(1.2,3.2) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+plotAnsEnc <- ggplot(EncRTAns, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "ans") +
+  ylim(1.2,3.2) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+
+plotImDelayEnc <- ggplot(EncRTImDelay, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "imaginal-delay") +
+  ylim(1.2,3.2) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+plotLeEnc <- ggplot(EncRTLe, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "le") +
+  ylim(1.2,3.2) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+plotNuEnc <- ggplot(EncRTNu, aes(x=interaction(Group.1,Group.2), y=x, col = as.factor(Group.3))) +
+  geom_point() +
+  theme_bw() + scale_color_grey() +
+  labs(y = "Response Time (ms)", x = "", color = "nu") +
+  ylim(1.2,3.2) +
+  scale_x_discrete(breaks = waiver(), labels = c("BN"," BP", "MN", "MP"))
+
+grid.arrange(plotAlphaEnc, plotAnsEnc, plotImDelayEnc,plotLeEnc, plotNuEnc, ncol = 5)
