@@ -8,11 +8,11 @@
 (sgp :trace-detail            low 
      :show-focus              t 
      :esc                     t 
-     :le                      1
+     :le                      0.9
      :nu                      0
      :er                      t
-     :imaginal-delay          0.20
-     :ans                     0.04
+     :imaginal-delay          0.15
+     :ans                     0.03
      ;:imaginal-activation     10
      ;:mas                     2
      :time-noise              0.02
@@ -22,7 +22,7 @@
      :ult		      t
      :tt                      2
      :pct                     t
-     :alpha                   0.1
+     :alpha                   0.5
      :bll                     0.5
      :lf                      1
      ;; Perceptual params
@@ -44,7 +44,7 @@
 
 ;;; Arithmetic chunks
 (chunk-type operation task type argument1 operator argument2 position)
-;(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production retrieval goal visual-location imaginal))
+
 
 ;;; Visual
 (chunk-type (ritl-screen (:include visual-object))

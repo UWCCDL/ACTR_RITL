@@ -46,7 +46,6 @@
 
 ;;; Arithmetic chunks
 (chunk-type operation task type argument1 operator argument2 position)
-;(sgp :buffer-trace t :buffer-trace-step .025 :traced-buffers (production retrieval goal visual-location imaginal))
 
 ;;; Visual
 (chunk-type (ritl-screen (:include visual-object))
