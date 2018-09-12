@@ -29,6 +29,8 @@
      :auto-attend             t 
      :visual-finst-span       10.0
      ;;:rt 0.4
+     :save-buffer-trace t
+     :traced-buffers (imaginal visual retrieval manual production goal)
      )
 
 ;;; Arithmetic facts
