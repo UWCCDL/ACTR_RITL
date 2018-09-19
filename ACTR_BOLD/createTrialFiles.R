@@ -1,5 +1,5 @@
 # Read in ACT-R file
-model_act <- read.table("~/GitHub/ACTR_RITL/ACTR_BOLD/model_act.txt", quote="\"", comment.char="")
+model_act <- read.table("~/GitHub/ACTR_RITL/ACTR_BOLD/model_act_monolingual.txt", quote="\"", comment.char="")
 
 # Use Manual module to get trial times
 # Manual module is used 3x in one trial -> after encoding, execution and probe
@@ -30,7 +30,7 @@ for (i in 2:length(unique(datModelAct$trial))) {
 }
 
 # Get model behavior
-model <- read.csv("~/GitHub/ACTR_RITL/ACTR_BOLD/model.txt")
+model <- read.csv("~/GitHub/ACTR_RITL/ACTR_BOLD/model_monolingual.txt")
 model$trial <- 1:60
 model$type <- NA
 
@@ -50,6 +50,6 @@ for (i in 1:max(dat$trial)) {
 }
 
 # condition information. Columns: subject, block, trial, condition. (not sure what to do with block...)
-actrinfo4mat <- data.frame(1,1,dat$trial,dat$type)
+actrinfo4mat <- unique(data.frame(1,1,dat$trial,dat$type))
 write.table(actrinfo4mat,"actrinfo4mat.txt", col.names = F, row.names = F)
 
