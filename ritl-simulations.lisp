@@ -14,7 +14,8 @@
 ;;; Usage:
 ;;; ------
 ;;;
-;;; (simulate 100 :params '((:ga 2.0) (:le 0.6)) :start 10 :filename "~/Documents/ga2_le06.csv")
+;;; (simulate 100 :params '((:ga 2.0) (:le 0.6))
+;;;               :start 10 :filename "~/Documents/ga2_le06.csv")
 ;;;
 (defun simulate (n &key (params nil) (start 0) (filename nil))
   "A generic function to run the model N times. Returns a table of performance measures with the params"
@@ -61,9 +62,9 @@
 	   (final-version (push colnames rev)))
       
       (if filename
-	  (write-csv final-version filename)
-	  final-version))))
-	
+		  (write-csv final-version filename)
+		  final-version))))
+
 
 (defun write-csv (table filename)
   "Writes a list of trials (formatted as in 'extract-results') in a CSV file"
